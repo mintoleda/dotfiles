@@ -1,0 +1,50 @@
+{
+  "layer": "top",
+
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-right": ["group/hardware", "clock"],
+
+  "hyprland/window": {
+    "max-length": 50
+  },
+
+  "group/hardware": {
+	  "orientation": "inherit",
+    
+    "drawer": {
+      "transition-duration": 400,
+      "children-class": "not-power",
+      "transition-left-to-right": false,
+    },
+		
+    "modules": [
+		  "battery",
+		  "network",
+		  "bluetooth"
+		]
+	},
+ 
+  "battery": {
+    "format": "{capacity}%{icon}",
+    // "format-icons": ["", "", "", "", ""]
+  },
+
+  "clock": {
+    "format-alt": "{:%a, %d. %b  %H:%M}"
+  },
+
+  "network": {
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰈀 ",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "format-icons": [
+      "󰤟 ",
+      "󰤢 ",
+      "󰤥 ",
+      "󰤨 "
+    ],
+ 
+    "format-disconnected": "󰤭 ",
+    "on-click": "kitty nmtui"
+  },
+}
