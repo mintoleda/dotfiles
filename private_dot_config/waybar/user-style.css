@@ -1,0 +1,13 @@
+/* User custom styles */
+
+* {
+  font-family:
+    "SFMono Nerd Font Mono"
+}
+
+workspaces#hyprland {
+  background-color: transparent;
+  color: #ffffff;
+  transition-property: background-color;
+  transition-duration: 3.5s;
+}
