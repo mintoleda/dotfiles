@@ -1,10 +1,16 @@
 {
   "layer": "top",
 
-  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
   "modules-right": ["group/hardware", "clock"],
 
+  "hyprland/workspaces": {
+
+  },
+
   "hyprland/window": {
+    "format": "{title}",
     "max-length": 50
   },
 
