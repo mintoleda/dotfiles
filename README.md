@@ -1,3 +1,3 @@
 # HELLO WORLD
 
-# [chezmoi-quickstart](https://www.chezmoi.io/quick-start)
+# [chezmoi-quickstart](https://www.chezmoi.io/user-guide/command-overview/)
