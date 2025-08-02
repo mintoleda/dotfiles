@@ -15,6 +15,7 @@ return {
               notes = "~/Notes", -- adjust path to your preferred notes dir
               school = "~/School/Notes/",
             },
+            default_workspace = "notes",
           },
         },
       },
