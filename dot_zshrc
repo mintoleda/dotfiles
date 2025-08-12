@@ -1,0 +1,37 @@
+# - 1. Fast shell startup
+# Enable zsh's instant prompt early
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# - 2. znap
+# Install znap if not already installed
+if [[ ! -f ~/.znap/znap.zsh ]]; then
+  mkdir -p ~/.znap && git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git ~/.znap
+fi
+source ~/.znap/znap.zsh
+
+# - 3. Theme
+# Load Powerlevel10k prompt via znap
+znap prompt romkatv/powerlevel10k
+
+# - 4. Plugins --
+znap source zsh-users/zsh-autosuggestions
+znap source zdharma-continuum/fast-syntax-highlighting
+znap source zsh-users/zsh-completions
+
+# - 5. P10k Config
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+# ─ 6. Completion Settings
+autoload -Uz compinit && compinit
+
+# - 7. Basic Options for Usability
+setopt autocd             # cd by just typing the dir name
+setopt correct            # command spelling correction
+setopt histignoredups     # ignore duplicate history entries
+setopt sharehistory       # share history across all sessions
+
+# - 8. Aliases
+alias waybar-reload='pkill waybar && hyprctl dispatch exec waybar'
