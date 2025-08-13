@@ -34,4 +34,5 @@ setopt histignoredups     # ignore duplicate history entries
 setopt sharehistory       # share history across all sessions
 
 # - 8. Aliases
-alias waybar-reload='pkill waybar && hyprctl dispatch exec waybar'
+alias waybar-reload='pkill waybar & hyprctl dispatch exec waybar'
+alias btui='bluetui'
