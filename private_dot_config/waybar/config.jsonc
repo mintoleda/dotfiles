@@ -78,6 +78,12 @@
   },
   
   
+"custom/wallpaper": {
+    "format": "   ",
+    "tooltip": false,
+    "on-click": "waypaper",
+  },
+
   "custom/expand": {
     "format": "",
     "tooltip": false
@@ -95,7 +101,7 @@
       "transition-to-left": true,
       "click-to-reveal": true
     },
-    "modules": ["custom/expand", "pulseaudio", "backlight", "custom/endpoint"],
+    "modules": ["custom/expand", "custom/wallpaper", "pulseaudio", "backlight", "custom/endpoint"],
   },
  
   "pulseaudio": {
