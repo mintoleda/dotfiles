@@ -4,9 +4,14 @@
     font-size:11px;
     font-family: "SFMono Nerd Font Mono";
 }
-window#waybar{
-    all:unset;
+
+window#waybar {
+    background-color: rgba(0, 0, 0, 0);
+    color: #ffffff;
+    transition-property: background-color;
+    transition-duration: 0.5s;
 }
+
 .modules-left {
     padding:7px;
     margin:10 0 5 10;
