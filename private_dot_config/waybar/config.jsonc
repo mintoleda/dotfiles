@@ -8,15 +8,11 @@
 
 
   "hyprland/workspaces": {
-     "format": "{icon}",
-     "format-icons": {
-        "active": "",
-        "default": "",
-        "empty": ""
-      },
-      "persistent-workspaces": {
+     // "format": "{icon}",
+      
+    "persistent-workspaces": {
         "*": [ 1,2,3 ]
-      }
+    }
   },
 
   "clock": {
