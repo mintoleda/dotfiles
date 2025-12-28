@@ -6,13 +6,14 @@ fi
 
 # - 2. znap
 # Install znap if not already installed
-if [[ ! -f ~/.znap/znap.zsh ]]; then
-  mkdir -p ~/.znap && git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git ~/.znap
+if [[ ! -f ~/repos/znap/znap.zsh ]]; then
+  mkdir -p ~/repos/znap && git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git ~/repos/znap
 fi
-source ~/.znap/znap.zsh
+source ~/repos/znap/znap.zsh
 
 # - 3. Theme
 # Load Powerlevel10k prompt via znap
+export ZDATADIR=~/repos
 znap prompt romkatv/powerlevel10k
 
 # - 4. Plugins --
