@@ -37,6 +37,7 @@ setopt sharehistory       # share history across all sessions
 # - 8. Aliases
 alias waybar-reload='pkill waybar & hyprctl dispatch exec waybar'
 alias btui='bluetui'
+alias nv='prime-run'
 
 # Created by `pipx` on 2025-09-02 01:12:46
 export PATH="$PATH:/home/adetola/.local/bin"
