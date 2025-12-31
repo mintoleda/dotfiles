@@ -20,13 +20,10 @@
     "tooltip-format": "<tt>{calendar}</tt>",
     "calendar": {
       "format": {
-        "today": "<span color='#fAfBfC'><b>{}</b></span>",
+        "months": "<span color='#BABEC5'><b>{}</b></span>",
+        "weekdays": "<span color='#8B8E92'><b>{}</b></span>",
+        "today": "<span color='#80807F'><b><u>{}</u></b></span>",
       },
-    },
-
-    "actions": {
-      "on-click-right": "shift_down",
-      "on-click": "shift_up",
     },
   },
 
@@ -54,7 +51,7 @@
     "interval": 30,
     "states": {
       "good": 95,
-      "warning": 30,
+      // "warning": 30,
       "critical": 20,
     },
 

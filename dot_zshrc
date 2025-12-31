@@ -29,15 +29,21 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 autoload -Uz compinit && compinit
 
 # - 7. Basic Options for Usability
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
 setopt autocd             # cd by just typing the dir name
-setopt correct            # command spelling correction
 setopt histignoredups     # ignore duplicate history entries
 setopt sharehistory       # share history across all sessions
+# setopt correct            # command spelling correction
 
 # - 8. Aliases
 alias waybar-reload='pkill waybar & hyprctl dispatch exec waybar'
 alias btui='bluetui'
 alias nv='prime-run'
+alias cd='z'
 
 # Created by `pipx` on 2025-09-02 01:12:46
 export PATH="$PATH:/home/adetola/.local/bin"
@@ -48,3 +54,5 @@ export PATH="$PATH:/home/adetola/.local/bin"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+eval "$(zoxide init zsh)"
