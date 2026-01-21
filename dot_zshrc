@@ -47,6 +47,7 @@ alias cd='z'
 
 # Created by `pipx` on 2025-09-02 01:12:46
 export PATH="$PATH:/home/adetola/.local/bin"
+export BROWSER="/usr/bin/zen-browser"
 
 # bun completions
 [ -s "/home/adetola/.bun/_bun" ] && source "/home/adetola/.bun/_bun"
