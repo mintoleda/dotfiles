@@ -5,6 +5,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import "bar" as Bar
 import "hub" as Hub
+import "Colors.qml" as ThemeColors
 
 ShellRoot {
     Variants {

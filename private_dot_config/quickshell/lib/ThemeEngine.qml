@@ -1,39 +1,41 @@
 import QtQuick
-import "../theme.js" as Theme // Dark-mode
+import "../" as RootDir
 
 QtObject {
     id: root
-    property bool isDarkMode: true
-    
-    // 1) Surfaces
-    readonly property color bgMain: isDarkMode ? "#141719" : "#a6b0a0"
+    property bool isDarkMode: true // Kept for compatibility
 
-    // Card + item surfaces 
-    readonly property color bgCard: isDarkMode ? Theme.bgCard : "#edc5c6b0"
-    readonly property color bgItem: isDarkMode ? Theme.bgItem : Qt.rgba(0, 0, 0, 0.05)
-    readonly property color bgWidget: isDarkMode ? Theme.bgItem : Qt.rgba(0, 0, 0, 0.05)
+    // Instantiate dynamic theme
+    property RootDir.Colors c: RootDir.Colors {}
+
+    // 1) Surfaces
+    // Background of the main panel/hub
+    readonly property color bgMain: Qt.rgba(c.background.r, c.background.g, c.background.b, 0.95)
+    
+    // Background of cards/groups
+    readonly property color bgCard: Qt.rgba(c.color0.r, c.color0.g, c.color0.b, 0.6)
+    
+    // Background of interactive items (buttons)
+    readonly property color bgItem: Qt.rgba(c.color8.r, c.color8.g, c.color8.b, 0.3)
+    
+    // Background of widgets
+    readonly property color bgWidget: Qt.rgba(c.color0.r, c.color0.g, c.color0.b, 0.8)
 
     // 2) Text
-    readonly property color textPrimary: isDarkMode ? Theme.fgMain : "#3c4841"
-    readonly property color textSecondary: isDarkMode ? Theme.fgMuted : "#232a23"
-    readonly property color textOnAccent: isDarkMode ? Theme.fgOnAccent : '#f0f2d4'
+    readonly property color textPrimary: c.foreground
+    readonly property color textSecondary: c.color8 // Muted text
+    readonly property color textOnAccent: c.background // Text on accent buttons
 
     // 3) Accents
-    readonly property color accent: isDarkMode ? Theme.accent : '#3c4841'
-    readonly property color accentSlider: isDarkMode ? "#83C092" : "#273018"
+    readonly property color accent: c.color2        // Primary accent
+    readonly property color accentSlider: c.color2  // Slider fill
+    readonly property color accentRed: c.color1     // Destructive/Red
 
     // 4) Lines, hovers, misc
-    readonly property color border: isDarkMode ? "#70a7c080" : '#b9566a35'
+    readonly property color border: Qt.rgba(c.foreground.r, c.foreground.g, c.foreground.b, 0.15)
+    readonly property color outline: Qt.rgba(c.foreground.r, c.foreground.g, c.foreground.b, 0.1)
 
-    // General outlines used by small controls (avatar ring, tiny pills, etc.)
-    readonly property color outline: isDarkMode ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(0, 0, 0, 0.10)
-
-    // Subtle fills for small buttons
-    readonly property color subtleFill: isDarkMode ? Qt.rgba(1, 1, 1, 0.05) : Qt.rgba(0, 0, 0, 0.05)
-    readonly property color subtleFillHover: isDarkMode ? Qt.rgba(1, 1, 1, 0.15) : Qt.rgba(0, 0, 0, 0.10)
-    readonly property color accentRed: isDarkMode ? Theme.accentRed : "#7a2a2a"
-
-
-    // Hover spotlight 
-    readonly property color hoverSpotlight: isDarkMode ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.10)
+    readonly property color subtleFill: Qt.rgba(c.foreground.r, c.foreground.g, c.foreground.b, 0.05)
+    readonly property color subtleFillHover: Qt.rgba(c.foreground.r, c.foreground.g, c.foreground.b, 0.15)
+    readonly property color hoverSpotlight: Qt.rgba(c.foreground.r, c.foreground.g, c.foreground.b, 0.1)
 }

@@ -9,6 +9,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Services.Mpris
 import Quickshell.Hyprland
 import "../theme.js" as Theme
+import "../" as RootDir
 import "../lib" as Lib
 
 PanelWindow {
@@ -51,19 +52,21 @@ PanelWindow {
     property int activeWsId: Hyprland.focusedMonitor?.activeWorkspace?.id ?? 1
 
     // --- 2. THEME ---
+    RootDir.Colors { id: theme }
+
     QtObject {
         id: palette
-        property color bg: win.isDarkMode ? Qt.rgba(0.23, 0.25, 0.22, 0.25) : '#edc5c6b0'
-        property color textPrimary: win.isDarkMode ? "#d5c9b2" : "#1e2326"
-        property color textSecondary: win.isDarkMode ? "#6a6f75" : "#5c6a72"
-        property color accent: win.isDarkMode ? "#a7c080" : "#273018"
-        property color activePill: win.isDarkMode ? "#a7c080" : "#87C080"
-        property color hoverSpotlight: win.isDarkMode ? Qt.rgba(1,1,1,0.14) : Qt.rgba(0,0,0,0.10)
-        property color border: win.isDarkMode ? Qt.rgba(1,1,1,0.08) : Qt.rgba(0,0,0,0.1)
+        property color bg: theme.background
+        property color textPrimary: theme.foreground
+        property color textSecondary: theme.color8
+        property color accent: theme.color2
+        property color activePill: theme.color2
+        property color hoverSpotlight: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.1)
+        property color border: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.1)
 
-        property color hoverPillG0: win.isDarkMode ? Qt.rgba(167/255, 192/255, 128/255, 0.15) : Qt.rgba(39/255, 48/255, 24/255, 0.14)
-        property color hoverPillG1: win.isDarkMode ? Qt.rgba(230/255, 255/255, 200/255, 0.25) : Qt.rgba(39/255, 48/255, 24/255, 0.22)
-        property color hoverPillG2: win.isDarkMode ? Qt.rgba(167/255, 192/255, 128/255, 0.15) : Qt.rgba(39/255, 48/255, 24/255, 0.14)
+        property color hoverPillG0: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.15)
+        property color hoverPillG1: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.25)
+        property color hoverPillG2: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.15)
     }
 
     // --- 3. HYPRLAND CACHE ---
