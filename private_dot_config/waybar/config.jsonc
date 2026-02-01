@@ -1,0 +1,126 @@
+{
+  "layer": "top",
+  "position": "top",
+  "reload_style_on_change": true,
+  "modules-left": ["clock", "hyprland/workspaces" /*, "tray"*/],
+  "modules-center": ["cava"],
+  "modules-right": [
+    "group/expand",
+    "group/netbt",
+    // "bluetooth",
+    // "network",
+    "battery",
+  ],
+
+  "hyprland/workspaces": {},
+
+  "clock": {
+    "format": "{:%I:%M %p} ",
+    "interval": 1,
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "format": {
+        "months": "<span color='#BABEC5'><b>{}</b></span>",
+        "weekdays": "<span color='#8B8E92'><b>{}</b></span>",
+        "today": "<span color='#80807F'><b><u>{}</u></b></span>",
+      },
+    },
+  },
+
+  "network": {
+    "format-wifi": "",
+    "format-ethernet": "",
+    "format-disconnected": "",
+    "tooltip-format-disconnected": "Error",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+    "tooltip-format-ethernet": "{ifname} 🖧 ",
+    "on-click": "kitty nmtui",
+  },
+
+  "bluetooth": {
+    "format-on": "󰂯",
+    "format-off": "BT-off",
+    "format-disabled": "󰂲",
+
+    "tooltip-format": "disconnected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "on-click": "kitty bluetui",
+  },
+
+  "battery": {
+    "interval": 30,
+    "states": {
+      "good": 95,
+      // "warning": 30,
+      "critical": 20,
+    },
+
+    "format": "{capacity}% {icon}",
+    "format-charging": "{capacity}% 󰂄",
+    "format-plugged": "{capacity}% 󰂄 ",
+
+    "format-icons": ["󰁻", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
+  },
+
+  "group/netbt": {
+    "orientation": "horizontal",
+    "modules": ["network", "bluetooth"],
+  },
+
+  "custom/wallpaper": {
+    "format": "   ",
+    "tooltip": false,
+    "on-click": "waypaper",
+  },
+
+  "custom/expand": {
+    "format": "",
+    "tooltip": false,
+  },
+
+  "custom/endpoint": {
+    "format": "|",
+    "tooltip": false,
+  },
+
+  "group/expand": {
+    "orientation": "horizontal",
+    "drawer": {
+      "transition-duration": 600,
+      "transition-to-left": true,
+      "click-to-reveal": true,
+    },
+    "modules": ["custom/expand", "pulseaudio", "backlight", "custom/endpoint"],
+  },
+
+  "cava": {
+    "cava_config": "$XDG_CONFIG_HOME/cava/config",
+    "bars": 30,
+    "hide_on_silence": false,
+    "format_silent": "",
+    "sleep_timer": 5,
+    "bar_delimiter": 0,
+    "noise_reduction": 0.77,
+    // "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format-icons": ["⠁", "⠃", "⠇", "⡇", "⡏", "⡟", "⡿", "⣿"],
+    "actions": {
+      "on-click-right": "mode",
+    },
+  },
+
+  "pulseaudio": {
+    "format": "{volume}% 󰕾",
+    "format-muted": "{volume}% ",
+  },
+
+  "backlight": {
+    "format": "{percent}% 󰃝",
+  },
+
+  "tray": {
+    "icon-size": 11,
+    "spacing": 5,
+    "tooltip-format": "{app_id}",
+    "ignore-list": ["Firewall"],
+  },
+}
