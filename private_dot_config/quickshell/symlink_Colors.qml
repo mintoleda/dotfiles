@@ -1,0 +1,1 @@
+/home/adetola/.cache/wal/colors.qml

@@ -17,7 +17,7 @@ PanelWindow {
     signal requestHubToggle()
 
     anchors { top: true; left: true; right: true }
-    height: 46
+    implicitHeight: 46
     color: "transparent"
 
     // --- 1. GLOBAL STATE ---
@@ -35,21 +35,26 @@ PanelWindow {
     property int activeWsId: Hyprland.focusedMonitor?.activeWorkspace?.id ?? 1
 
     // --- 2. THEME ---
-    RootDir.Colors { id: theme }
+    RootDir.Colors { id: appColors }
+
+    function withAlpha(c, a) {
+        if (!c) return "transparent"
+        return Qt.rgba(c.r, c.g, c.b, a)
+    }
 
     QtObject {
         id: palette
-        property color bg: theme.background
-        property color textPrimary: theme.foreground
-        property color textSecondary: theme.color8
-        property color accent: theme.color2
-        property color activePill: theme.color2
-        property color hoverSpotlight: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.1)
-        property color border: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.1)
+        property color bg: appColors.background
+        property color textPrimary: appColors.foreground
+        property color textSecondary: appColors.color8
+        property color accent: appColors.color2
+        property color activePill: appColors.color2
+        property color hoverSpotlight: win.withAlpha(appColors.foreground, 0.1)
+        property color border: win.withAlpha(appColors.foreground, 0.1)
 
-        property color hoverPillG0: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.15)
-        property color hoverPillG1: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.25)
-        property color hoverPillG2: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.15)
+        property color hoverPillG0: win.withAlpha(appColors.color2, 0.15)
+        property color hoverPillG1: win.withAlpha(appColors.color2, 0.25)
+        property color hoverPillG2: win.withAlpha(appColors.color2, 0.15)
     }
 
     // --- 3. HYPRLAND CACHE ---
@@ -141,7 +146,7 @@ PanelWindow {
         interval: 15000 // 15s wait for internet
         running: true; repeat: false
         onTriggered: {
-            if (!updateProc.running) updates.update()
+            if (!updateProc.running) updates.poll()
         }
     }
     // 6.2 BATTERY %, STATUS POLLER
@@ -251,7 +256,7 @@ PanelWindow {
                         height: 25
                         anchors.verticalCenter: parent.verticalCenter
                         radius: 13
-                        color: Qt.rgba(palette.textPrimary.r, palette.textPrimary.g, palette.textPrimary.b, 1)
+                        color: palette.textPrimary
                         opacity: 0.10
                         Behavior on x { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
                         Behavior on width { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
@@ -328,39 +333,17 @@ PanelWindow {
             }
 //------------------------------------------------- CENTER -----------------------------------------------------
 
-            // 9. MEDIA & TITLE 
+            // Center spacer
             Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
-                property var player: Mpris.players.values[0] ?? null
-                property bool isPlaying: player && player.playbackState === MprisPlaybackState.Playing
-                property string trackTitle: player ? player.trackTitle : ""
-                property string trackArtist: player ? player.trackArtist : ""
-
-                // Window Title Removed
-
-
-                RowLayout {
-                    anchors.centerIn: parent
-                    visible: parent.isPlaying
-                    spacing: 10
-                    Text { text: ""; font.family: Theme.iconFont; font.pixelSize: 14; color: palette.accent }
-                    Text {
-                        text: parent.parent.trackTitle + " <font color='" + palette.textSecondary + "'>- " + parent.parent.trackArtist + "</font>"
-                        textFormat: Text.StyledText
-                        font.family: Theme.iconFont; font.weight: 700; font.pixelSize: 13
-                        color: palette.textPrimary
-                        Layout.maximumWidth: 350
-                        elide: Text.ElideRight
-                    }
-                }
             }
 
 //----------------------------------------------------------------------------------------RIGHT----------
 
             // 10. UPDATES
             BarItem {
-                property color updatesBg: Qt.rgba(palette.accent.r, palette.accent.g, palette.accent.b, 0.15)
+                property color updatesBg: palette.hoverPillG0
                 property color updatesFg: palette.textPrimary
 
                 // Keep visible while update process is running
@@ -378,7 +361,7 @@ PanelWindow {
                     // When running changes to false (window closed),
                     onRunningChanged: {
                         if (!running) {
-                            updates.update()
+                            updates.poll()
                         }
                     }
                 }

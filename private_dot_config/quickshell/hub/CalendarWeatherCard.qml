@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import "../lib" as Lib
 import "../theme.js" as Theme
+import "../config.js" as Config
 
 Lib.Card {
   id: root
@@ -22,7 +23,7 @@ Lib.Card {
     id: weather
     running: root.active && root.visible
     interval: 60000
-    command: ["bash","-lc", "$HOME/.config/quickshell/snes-hub/lib/weather.sh"]
+    command: ["bash","-lc", Config.WEATHER_SCRIPT_PATH]
     parse: function(out) {
       try {
         var d = JSON.parse(String(out))
@@ -93,9 +94,9 @@ Lib.Card {
 
           Text {
             text: weather.value ? weather.value.icon : "☁"
-            font.family: "Noto Emoji"
-            font.pixelSize: 12
-            color: (root.theme && root.theme.isDarkMode) ? Theme.weatherd : Theme.weatherl
+            font.family: Theme.iconFont
+            font.pixelSize: 14
+            color: (root.theme ? root.theme.accent : Theme.accent)
           }
 
           Text {

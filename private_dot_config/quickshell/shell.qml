@@ -28,7 +28,6 @@ ShellRoot {
 
             function toggleHub() {
                 hub.visible = !hub.visible
-                if (hub.visible) hub.forceActiveFocus()
             }
 
             Connections {

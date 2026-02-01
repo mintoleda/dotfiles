@@ -183,7 +183,7 @@ Lib.Card {
         onRightClicked: {
             root.closeRequested()
             // det("nm-connection-editor >/dev/null 2>&1 &")
-            det("quickshell -p ~/.config/quickshell/snes-hub/lib/WifiMenu.qml")
+            det("quickshell -p ~/.config/quickshell/lib/WifiMenu.qml")
         }
         fixX: -10
       }

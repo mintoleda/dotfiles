@@ -46,7 +46,7 @@ Lib.Card {
   function det(cmd) { Quickshell.execDetached(sh(cmd)) }
 
   property var pollCommand: sh(
-    "makoctl history 2>/dev/null | " +
+    "(makoctl list 2>/dev/null; makoctl history 2>/dev/null) | " +
     "awk 'BEGIN{c=0} /^Notification [0-9]+:/{c++; if(c>60) exit} {print}' || true"
   )
 
@@ -97,23 +97,26 @@ Lib.Card {
   function parseMakoToItems(raw) {
     var lines = String(raw ?? "").split("\n")
     var incoming = []
-    for (var i = 0; i < lines.length && incoming.length < 50; i++) {
-      var line = lines[i].trim()
-      var m = line.match(/^Notification\s+(\d+):\s*(.+)$/)
-      if (!m) continue
-      var id = Number(m[1])
-      var summary = m[2] || "Notification"
-      var app = "SYSTEM"
+      var seenIds = ({})
+      for (var i = 0; i < lines.length && incoming.length < 50; i++) {
+        var line = lines[i].trim()
+        var m = line.match(/^Notification\s+(\d+):\s*(.+)$/)
+        if (!m) continue
+        var id = Number(m[1])
+        if (seenIds[id]) continue
+        seenIds[id] = true
+        var summary = m[2] || "Notification"
+        var app = "SYSTEM"
 
-      for (var j = i + 1; j < Math.min(i + 12, lines.length); j++) {
-        var l2 = lines[j].trim()
-        var am = l2.match(/^App name:\s*(.+)$/)
-        if (am) { app = am[1]; break }
-        if (l2.startsWith("Notification ")) break
+        for (var j = i + 1; j < Math.min(i + 12, lines.length); j++) {
+          var l2 = lines[j].trim()
+          var am = l2.match(/^App name:\s*(.+)$/)
+          if (am) { app = am[1]; break }
+          if (l2.startsWith("Notification ")) break
+        }
+
+        if (!root.dismissed[id]) incoming.push({ nId: id, app: app, summary: summary })
       }
-
-      if (!root.dismissed[id]) incoming.push({ nId: id, app: app, summary: summary })
-    }
     return incoming
   }
 
@@ -171,8 +174,7 @@ Lib.Card {
 
   // ---------- UI ----------
   ColumnLayout {
-    anchors.left: parent.left
-    anchors.right: parent.right
+    Layout.fillWidth: true
     spacing: 10
 
     // Header

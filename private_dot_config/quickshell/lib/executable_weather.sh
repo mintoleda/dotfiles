@@ -1,10 +1,31 @@
 #!/bin/bash
-# ~/.config/quickshell/snes-hub/lib/weather.sh
+# ~/.config/quickshell/lib/weather.sh
+
+# Load environment variables from .env file
+ENV_FILE="$HOME/.config/quickshell/.env"
+if [ -f "$ENV_FILE" ]; then
+    # Source the .env file and export variables
+    export $(grep -v '^#' "$ENV_FILE" | xargs)
+fi
 
 # OpenWeatherMap API Configuration
-API_KEY="YOUR WEATHER API"
-LAT="LATITUDE"   
-LON="LONGITUDE"
+API_KEY="${OPENWEATHER_API_KEY}"
+DEFAULT_LAT="32.7157"   
+DEFAULT_LON="-96.7969"
+
+# Try to get latitude and longitude from IP location
+get_location() {
+    # Use ip-api.com for a quick location lookup
+    local location=$(curl -sf --max-time 2 http://ip-api.com/json/ 2>/dev/null)
+    if [ $? -eq 0 ] && [ -n "$location" ]; then
+        LAT=$(echo "$location" | jq -r '.lat // empty')
+        LON=$(echo "$location" | jq -r '.lon // empty')
+    fi
+    
+    # Fallback to defaults if dynamic fetch failed or returned empty
+    LAT=${LAT:-$DEFAULT_LAT}
+    LON=${LON:-$DEFAULT_LON}
+}
 
 # Cache Configuration
 CACHE_FILE="$HOME/.config/quickshell/.cache/weather.json"
@@ -70,7 +91,8 @@ get_icon() {
 
 # Fetch weather from OpenWeatherMap
 fetch_weather() {
-    local url="https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&units=metric&appid=${API_KEY}"
+    get_location
+    local url="https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&units=imperial&appid=${API_KEY}"
     
     # Fetch with 5 second timeout
     local response=$(curl -sf --max-time 5 "$url" 2>/dev/null)
