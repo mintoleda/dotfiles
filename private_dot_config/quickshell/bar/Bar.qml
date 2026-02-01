@@ -170,69 +170,6 @@ PanelWindow {
     QtObject { id: batStatus; property var value: (powerPoll.value ? powerPoll.value.status : "") }
     QtObject { id: acOnline; property var value: (powerPoll.value ? powerPoll.value.ac : "") }
 
-    // --- ICON MAP ---
-    function getIcon(cls) {
-        var c = (cls || "").toLowerCase()
-        if (c.includes("firefox") || c.includes("zen") || c.includes("librewolf")) return "󰈹"
-        if (c.includes("chromium") || c.includes("chrome") || c.includes("thorium")) return ""
-        if (c.includes("brave")) return ""
-        if (c.includes("qutebrowser")) return "󰖟"
-        if (c.includes("kitty")) return "󰄛"
-        if (c.includes("alacritty") || c.includes("foot") || c.includes("terminal") || c.includes("ghostty") || c.includes("wezterm")) return ""
-        if (c.includes("code") || c.includes("codium")) return ""
-        if (c.includes("sublime")) return "󰅳"
-        if (c.includes("neovide") || c.includes("nvim")) return ""
-        if (c.includes("idea") || c.includes("jetbrains")) return ""
-        if (c.includes("pycharm")) return ""
-        if (c.includes("webstorm")) return ""
-        if (c.includes("clion")) return ""
-        if (c.includes("android")) return "󰀴"
-        if (c.includes("kate") || c.includes("texteditor")) return "󰈔"
-        if (c.includes("nautilus") || c.includes("org.gnome.nautilus") || c.includes("files")) return ""
-        if (c.includes("thunar") || c.includes("dolphin") || c.includes("nemo")) return ""
-        if (c.includes("discord") || c.includes("vesktop")) return "󰙯"
-        if (c.includes("slack")) return "󰒱"
-        if (c.includes("telegram")) return ""
-        if (c.includes("signal")) return "󰭹"
-        if (c.includes("element")) return "󰘨"
-        if (c.includes("whatsapp")) return "󰖣"
-        if (c.includes("spotify")) return ""
-        if (c.includes("vlc")) return "󰕼"
-        if (c.includes("mpv") || c.includes("haruna") || c.includes("strawberry") || c.includes("rhythmbox") || c.includes("totem")) return ""
-        if (c.includes("gimp")) return ""
-        if (c.includes("inkscape")) return "󰕙"
-        if (c.includes("krita")) return ""
-        if (c.includes("blender")) return "󰂫"
-        if (c.includes("audacity")) return "󰎈"
-        if (c.includes("obs")) return ""
-        if (c.includes("kdenlive")) return "󰕧"
-        if (c.includes("steam")) return ""
-        if (c.includes("lutris")) return "󰺵"
-        if (c.includes("heroic")) return "󰊖"
-        if (c.includes("prismlauncher")) return "󰍳"
-        if (c.includes("libreoffice-writer")) return "󰈬"
-        if (c.includes("calc")) return "󰧷"
-        if (c.includes("impress")) return "󰈧"
-        if (c.includes("libreoffice")) return "󰈙"
-        if (c.includes("evince")) return "󰈦"
-        if (c.includes("thunderbird")) return ""
-        if (c.includes("settings") || c.includes("missioncenter")) return ""
-        if (c.includes("look")) return ""
-        if (c.includes("systemmonitor")) return "󰄨"
-        if (c.includes("pavucontrol")) return "󰕾"
-        if (c.includes("calculator")) return "󰃬"
-        if (c.includes("weather")) return ""
-        if (c.includes("evercal")) return "󰃭"
-        if (c.includes("playing")) return "󰎄"
-        if (c.includes("photos") || c.includes("org.gnome.loupe") || c.includes("imv") || c.includes("feh") || c.includes("eog") || c.includes("gthumb") || c.includes("qimgv") || c.includes("viewnior")) return ""
-        if (c.includes ("swappy")) return "󰫕"
-        if (c.includes ("amberol")) return "󱖏"
-        if (c.includes ("xdm")) return ""
-        if (c.includes ("zathura")) return ""
-        if (c.includes ("focuswriter")) return "󱞁"
-
-        return ""
-    }
 // ------------------ THE BAR ---------------------------------------------------------------------------------
     Rectangle {
         anchors.fill: parent
@@ -339,7 +276,13 @@ PanelWindow {
                             property bool hasWindows: winCount > 0
                             property bool isUrgent: wsWindows.some(tl => tl.urgent)
 
-                            width: hasWindows ? (winCount * 22 + 12) : 26
+                            // VISIBILITY LOGIC:
+                            // Show if it's one of the first 3 workspaces (1-3)
+                            // OR if it's the active workspace
+                            // OR if it has windows
+                            visible: index < 3 || isActive || hasWindows
+
+                            width: visible ? 26 : 0
                             height: 34
 
                             HoverHandler {
@@ -357,63 +300,19 @@ PanelWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                visible: !wsDelegate.hasWindows
-                                text: "•"
+                                visible: true
+                                // Active OR Occupied -> Number
+                                // Inactive AND Empty -> Dot
+                                text: (wsDelegate.isActive || wsDelegate.hasWindows) ? String(wsDelegate.wsId) : "•"
                                 font.family: Theme.iconFont; font.pixelSize: 14; lineHeight: 0.8
                                 verticalAlignment: Text.AlignVCenter
                                 Behavior on color { ColorAnimation { duration: 140 } }
-                                color: isActive ? "#2d353b" : (wsHover.hovered ? palette.accent : "#d5c9b2")
+                                // Active -> Use textPrimary for contrast against the accent pill
+                                // Occupied -> Accent
+                                // Empty -> Secondary Text
+                                color: isActive ? palette.textPrimary : (wsDelegate.hasWindows ? palette.accent : (wsHover.hovered ? palette.accent : palette.textSecondary))
                             }
 
-                            Row {
-                                anchors.centerIn: parent; spacing: 0
-                                visible: wsDelegate.hasWindows
-                                Repeater {
-                                    model: wsDelegate.wsWindows
-                                    Item {
-                                        width: 22; height: 22
-
-                                        // --- ipc ---
-                                        property string safeClass: {
-                                            const o = modelData?.lastIpcObject;
-                                            var c = o?.class ?? "";
-                                            if (!c) c = o?.initialClass ?? "";
-                                            if (!c) c = o?.initialTitle ?? "";
-                                            if (!c) c = modelData?.title ?? "";
-                                            return String(c);
-                                        }
-
-                                        QtObject {
-                                            id: flashColor
-                                            property color val: "#1e2326"
-                                            SequentialAnimation on val {
-                                                running: modelData.urgent
-                                                loops: Animation.Infinite
-                                                ColorAnimation { to: "#e67e80"; duration: 200 }
-                                                ColorAnimation { to: "#dbbc7f"; duration: 200 }
-                                            }
-                                        }
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: win.getIcon(parent.safeClass)
-                                            font.family: Theme.iconFont; font.pixelSize: 18; lineHeight: 0.8
-                                            verticalAlignment: Text.AlignVCenter
-                                            font.hintingPreference: Font.PreferNoHinting
-                                            Behavior on color { enabled: !modelData.urgent; ColorAnimation { duration: 140 } }
-                                            scale: (wsDelegate.isActive && wsHover.hovered) ? 1.25 : 1.0
-                                            Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
-                                            color: wsDelegate.isActive ? "#2d353b" :
-                                                   (modelData.urgent ? flashColor.val :
-                                                   (wsHover.hovered ? palette.accent :
-                                                   "#d5c9b2"))
-                                        layer.enabled: true
-                                        layer.smooth: true
-                                        layer.mipmap: true
-                                        }
-
-                                    }
-                                }
-                            }
                             MouseArea {
                                 id: wsPress
                                 anchors.fill: parent
@@ -445,7 +344,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     visible: parent.isPlaying
                     spacing: 10
-                    Text { text: ""; font.family: Theme.iconFont; font.pixelSize: 14; color: palette.accent }
+                    Text { text: ""; font.family: Theme.iconFont; font.pixelSize: 14; color: palette.accent }
                     Text {
                         text: parent.parent.trackTitle + " <font color='" + palette.textSecondary + "'>- " + parent.parent.trackArtist + "</font>"
                         textFormat: Text.StyledText
