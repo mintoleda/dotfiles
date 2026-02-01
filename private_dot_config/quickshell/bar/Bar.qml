@@ -17,7 +17,7 @@ PanelWindow {
     signal requestHubToggle()
 
     anchors { top: true; left: true; right: true }
-    height: 40
+    height: 46
     color: "transparent"
 
     // --- 1. GLOBAL STATE ---
@@ -25,7 +25,7 @@ PanelWindow {
 
 //------------------------------------------------
     WlrLayershell.layer: WlrLayer.Top
-    WlrLayershell.exclusiveZone: 38
+    WlrLayershell.exclusiveZone: 46
     WlrLayershell.namespace: "shell-bar"
 //------------------------------------------------
     function sh(cmd) { return ["bash", "-c", cmd] }
@@ -247,47 +247,8 @@ PanelWindow {
 // LEFT----------------------------------------------------------------------------------------------------------
 
             // 7. LAUNCHER
-            Item {
-                Layout.preferredWidth: 36
-                Layout.preferredHeight: 36
-                Layout.alignment: Qt.AlignVCenter
-                scale: launchPress.pressed ? 0.94 : 1.0
-                Behavior on scale { NumberAnimation { duration: 220; easing.type: Easing.OutBack; easing.overshoot: 1.08 } }
-                HoverHandler { id: hoverLaunch }
-                Rectangle {
-                    anchors.fill: parent
-                    radius: height / 2
-                    color: Qt.rgba(launchIcon.color.r, launchIcon.color.g, launchIcon.color.b, 1)
-                    opacity: launchPress.pressed ? 0.10 : (hoverLaunch.hovered ? 0.08 : 0.0)
-                    Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-                }
+            // 7. LAUNCHER - Removed
 
-                Text {
-                    id: launchIcon
-                    anchors.centerIn: parent
-                    text: ""
-                    font.family: Theme.iconFont; font.pixelSize: 22
-                    color: {
-                        if (hoverLaunch.hovered) return "#89b4fa"
-                        return "#89b4fa"
-                    }
-                    rotation: hoverLaunch.hovered ? -14 : 0
-                    scale: hoverLaunch.hovered ? 1.20 : 1.0
-                    y: hoverLaunch.hovered ? -2 : 0
-                    Behavior on rotation { NumberAnimation { duration: 240; easing.type: Easing.OutBack; easing.overshoot: 1.08 } }
-                    Behavior on scale { NumberAnimation { duration: 220; easing.type: Easing.OutBack; easing.overshoot: 1.08 } }
-                    Behavior on y { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
-                    Behavior on color { ColorAnimation { duration: 160 } }
-                }
-                MouseArea {
-                    id: launchPress
-                    anchors.fill: parent
-                    hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                     onClicked: (mouse) => {
-                        if (mouse.button === Qt.LeftButton) win.det("pkill -x rofi || ~/.config/rofi/launcher.sh")
-                    }
-                }
-            }
 
             // 8. WORKSPACES
             Rectangle {
@@ -477,15 +438,8 @@ PanelWindow {
                 property string trackTitle: player ? player.trackTitle : ""
                 property string trackArtist: player ? player.trackArtist : ""
 
-                Text {
-                    anchors.centerIn: parent
-                    visible: !parent.isPlaying
-                    text: Hyprland.activeToplevel?.title ?? "Desktop"
-                    font.family: Theme.iconFont; font.weight: 700; font.pixelSize: 13
-                    color: palette.textPrimary
-                    width: Math.min(implicitWidth, 500)
-                    elide: Text.ElideRight
-                }
+                // Window Title Removed
+
 
                 RowLayout {
                     anchors.centerIn: parent
