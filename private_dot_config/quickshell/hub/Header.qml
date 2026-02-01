@@ -11,8 +11,7 @@ Item {
   id: root
   property bool active: true
   property QtObject theme: null
-  property string profileName: Config.PROFILE_NAME
-  property string profileImage: Config.PROFILE_IMG
+  property string profileName: Quickshell.env("USER") || "User"
 
   property bool expanded: false
   signal closeRequested()
@@ -52,12 +51,7 @@ Item {
     }
 }
 
-  Timer {
-    id: snapTimer
-    interval: 320
-    repeat: false
-    onTriggered: Quickshell.execDetached(["bash", "-c", "/home/snes/.config/hypr/screenshots/captureArea.sh"])
-  }
+
 
   ColumnLayout {
       anchors.fill: parent
@@ -68,31 +62,8 @@ Item {
         Layout.preferredHeight: 52
         spacing: 12
 
-        // Profile Pic
-        Item {
-          width: 48; height: 48
-          Layout.alignment: Qt.AlignVCenter
-          Rectangle { id: pfpMask; anchors.fill: parent; radius: width/2; visible: false }
-          Item {
-            anchors.fill: parent; layer.enabled: root.visible; layer.smooth: true
-            layer.effect: OpacityMask { maskSource: pfpMask }
-            Image {
-              anchors.fill: parent
-              fillMode: Image.PreserveAspectCrop
-              source: (root.profileImage.startsWith("file://") ? "" : "file://") + root.profileImage
-              mipmap: true; smooth: true; cache: true; asynchronous: true
-              sourceSize: Qt.size(256, 256)
-            }
-          }
-          Rectangle {
-            anchors.fill: parent
-            radius: width/2
-            color: "transparent"
-            border.width: 1
-            border.color: root._outline
-            antialiasing: true
-          }
-        }
+        // Profile Pic - Removed
+
 
         Text {
           text: root.profileName
@@ -100,6 +71,7 @@ Item {
           font.pixelSize: 18
           font.weight: 700
           color: root._textPrimary
+          leftPadding: 10
           Layout.fillWidth: true
           verticalAlignment: Text.AlignVCenter
           elide: Text.ElideRight
@@ -113,19 +85,7 @@ Item {
                 Layout.alignment: Qt.AlignRight
                 spacing: 8
 
-                Rectangle {
-                    id: snapBtn
-                    width: 24; height: 24; radius: 12
-                    color: snapTap.pressed ? root._subtleFillHover
-                          : (snapHover.hovered ? root._subtleFillHover : root._subtleFill)
-                    border.width: 1; border.color: root._outline
-                    scale: snapTap.pressed ? 0.95 : 1.0
-                    Behavior on scale { NumberAnimation { duration: 90; easing.type: Easing.OutCubic } }
-                    Behavior on color { ColorAnimation { duration: 150 } }
-                    Text { anchors.centerIn: parent; text: ""; font.family: Theme.iconFont; font.pixelSize: 16; color: root._textPrimary; topPadding: 1 }
-                    HoverHandler { id: snapHover }
-                    TapHandler { id: snapTap; onTapped: { root.closeRequested(); snapTimer.restart() } }
-                }
+
 
                 Rectangle {
                     id: pwrBtn

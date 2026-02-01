@@ -67,8 +67,7 @@ PanelWindow {
     focusable: visible
     WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-    property string profileName: Config.PROFILE_NAME
-    property string profileImage: Config.PROFILE_IMG
+
     property bool batteryCardActive: false
     property int topGap: 8
     property int rightGap: 10
@@ -151,8 +150,7 @@ PanelWindow {
                     id: header
                     theme: theme
                     Layout.fillWidth: true
-                    profileName: win.profileName
-                    profileImage: win.profileImage
+
                     active: win.visible
                     onCloseRequested: closeAll()
 

@@ -10,13 +10,8 @@ PYWAL_QS_CACHE="$HOME/.cache/wal/colors.qml"
 
 # --- FUNCTIONS ---
 
-apply_pywal() {
-    # Check if pywal cache exists
-    if [[ ! -f "$PYWAL_HYPR_CACHE" ]]; then
-        notify-send "Theme Error" "Pywal colors not found. Please generate them first (e.g. using Waypaper)."
-        exit 1
-    fi
 
+apply_pywal() {
     notify-send "Theme" "Switching to Pywal..."
 
     # Link Pywal generated files

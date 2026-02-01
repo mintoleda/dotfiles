@@ -21,25 +21,8 @@ PanelWindow {
     color: "transparent"
 
     // --- 1. GLOBAL STATE ---
-    // Theme mode: default is always dark, false will activate light mode
-    property bool isDarkMode: true
-    readonly property string _themeModePath: Quickshell.env("HOME") + "/.cache/quickshell/theme_mode"
-    FileView {
-        id: themeModeFile
-        path: win._themeModePath
-        watchChanges: true
-        preload: true
-        // Update local property when file loads or changes
-        onLoaded: {
-            var m = String(text() || "").trim().toLowerCase()
-            win.isDarkMode = (m !== "light")
-        }
-        onTextChanged: {
-             var m = String(text() || "").trim().toLowerCase()
-             win.isDarkMode = (m !== "light")
-        }
-        onFileChanged: reload()
-    }
+    // Removed theme mode logic
+
 //------------------------------------------------
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.exclusiveZone: 38
@@ -285,8 +268,8 @@ PanelWindow {
                     text: ""
                     font.family: Theme.iconFont; font.pixelSize: 22
                     color: {
-                        if (hoverLaunch.hovered) return win.isDarkMode ? "#89b4fa" : "#1e66f5"
-                        return win.isDarkMode ? "#89b4fa" : "#1e66f5"
+                        if (hoverLaunch.hovered) return "#89b4fa"
+                        return "#89b4fa"
                     }
                     rotation: hoverLaunch.hovered ? -14 : 0
                     scale: hoverLaunch.hovered ? 1.20 : 1.0
@@ -300,12 +283,8 @@ PanelWindow {
                     id: launchPress
                     anchors.fill: parent
                     hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: (mouse) => {
-                        if (mouse.button === Qt.LeftButton) win.det("pkill -x rofi || " + (win.isDarkMode ? "~/.config/rofi/launcher.sh" : "~/.config/rofi/launcher_2.sh"))
-                        else if (mouse.button === Qt.RightButton) {
-                            win.isDarkMode = !win.isDarkMode
-                            win.det("bash /home/snes/.config/quickshell/snes-hub/bar/theme-mode.sh " + (win.isDarkMode ? "dark" : "light"))
-                        }
+                     onClicked: (mouse) => {
+                        if (mouse.button === Qt.LeftButton) win.det("pkill -x rofi || ~/.config/rofi/launcher.sh")
                     }
                 }
             }
@@ -422,7 +401,7 @@ PanelWindow {
                                 font.family: Theme.iconFont; font.pixelSize: 14; lineHeight: 0.8
                                 verticalAlignment: Text.AlignVCenter
                                 Behavior on color { ColorAnimation { duration: 140 } }
-                                color: isActive ? "#2d353b" : (wsHover.hovered ? (win.isDarkMode ? "#f2f2f2" : palette.accent) : (win.isDarkMode ? "#d5c9b2" : "#5c6a72"))
+                                color: isActive ? "#2d353b" : (wsHover.hovered ? palette.accent : "#d5c9b2")
                             }
 
                             Row {
@@ -445,7 +424,7 @@ PanelWindow {
 
                                         QtObject {
                                             id: flashColor
-                                            property color val: win.isDarkMode ? "#d5c9b2" : "#1e2326"
+                                            property color val: "#1e2326"
                                             SequentialAnimation on val {
                                                 running: modelData.urgent
                                                 loops: Animation.Infinite
@@ -464,8 +443,8 @@ PanelWindow {
                                             Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                                             color: wsDelegate.isActive ? "#2d353b" :
                                                    (modelData.urgent ? flashColor.val :
-                                                   (wsHover.hovered ? (win.isDarkMode ? "#f2f2f2" : palette.accent) :
-                                                   (win.isDarkMode ? "#d5c9b2" : "#1e2326")))
+                                                   (wsHover.hovered ? palette.accent :
+                                                   "#d5c9b2"))
                                         layer.enabled: true
                                         layer.smooth: true
                                         layer.mipmap: true
@@ -528,8 +507,8 @@ PanelWindow {
 
             // 10. UPDATES
             BarItem {
-                property color updatesBg: win.isDarkMode ? '#ce829469' : '#be7f9b58'
-                property color updatesFg: win.isDarkMode ? "#2d353b" : "#1e2326"
+                property color updatesBg: Qt.rgba(palette.accent.r, palette.accent.g, palette.accent.b, 0.15)
+                property color updatesFg: palette.textPrimary
 
                 // Keep visible while update process is running
                 visible: updateProc.running || (updates.value !== "0" && updates.value !== "")
@@ -598,6 +577,7 @@ PanelWindow {
 
             // 12. BATTERY
             BarItem {
+                id: batItem
                 Layout.preferredWidth: 74
                 property string status: String(batStatus.value).trim()
                 property int rawCap: Number(batCap.value) || 0
@@ -606,35 +586,36 @@ PanelWindow {
                 property bool isCharging: plugged || status === "Charging" || status === "Full"
 
                 property string battColor: {
-                    const dark = win.isDarkMode;
-                    if (isCharging) return palette.accent;
+                    const dark = true; // defaulting to dark logic for now or just using theme colors
+
+                    if (batItem.isCharging) return palette.accent;
                     const crit = dark ? '#ff0004' : '#ff001e';
                     const low  = dark ? "#e69875" : '#a55524';
                     const mid  = dark ? "#dbbc7f" : "#7a5b00";
-                    if (cap <= 10) return crit;
-                    if (cap <= 20) return low;
-                    if (cap <= 30) return mid;
+                    if (batItem.cap <= 10) return crit;
+                    if (batItem.cap <= 20) return low;
+                    if (batItem.cap <= 30) return mid;
                     return palette.textPrimary;
                 }
                 property string dynamicIcon: {
-                    if (isCharging) return "󰂄"
-                    if (cap >= 98) return "󰁹"
-                    if (cap >= 90) return "󰂂"; if (cap >= 80) return "󰂁"
-                    if (cap >= 70) return "󰂀"; if (cap >= 60) return "󰁿"
-                    if (cap >= 50) return "󰁾"; if (cap >= 40) return "󰁽"
-                    if (cap >= 30) return "󰁼"; if (cap >= 20) return "󰁻"
+                    if (batItem.isCharging) return "󰂄"
+                    if (batItem.cap >= 98) return "󰁹"
+                    if (batItem.cap >= 90) return "󰂂"; if (batItem.cap >= 80) return "󰂁"
+                    if (batItem.cap >= 70) return "󰂀"; if (batItem.cap >= 60) return "󰁿"
+                    if (batItem.cap >= 50) return "󰁾"; if (batItem.cap >= 40) return "󰁽"
+                    if (batItem.cap >= 30) return "󰁼"; if (batItem.cap >= 20) return "󰁻"
                     return "󰁺"
                 }
 
-                icon: dynamicIcon; text: cap + "%"
+                icon: dynamicIcon; text: batItem.cap + "%"
                 bgColor: palette.bg; iconColor: battColor; textColor: battColor
                 borderWidth: 0; borderColor: "transparent"; hoverColor: palette.hoverSpotlight
 
                 SequentialAnimation {
-                    running: cap <= 10 && !isCharging
+                    running: batItem.cap <= 10 && !batItem.isCharging
                     loops: Animation.Infinite
-                    NumberAnimation { target: parent; property: "opacity"; to: 0.3; duration: 500 }
-                    NumberAnimation { target: parent; property: "opacity"; to: 1.0; duration: 500 }
+                    NumberAnimation { target: batItem; property: "opacity"; to: 0.3; duration: 500 }
+                    NumberAnimation { target: batItem; property: "opacity"; to: 1.0; duration: 500 }
                 }
 
                 Rectangle {

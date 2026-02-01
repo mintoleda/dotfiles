@@ -97,7 +97,7 @@ Lib.Card {
     id: perfPoll
     running: root.active && root.visible
     interval: 5000
-    command: sh("sudo surface profile get 2>/dev/null || echo 'balanced'")
+    command: sh("asusctl profile get 2>/dev/null | grep 'Active profile:' | cut -d: -f2 || echo 'Balanced'")
     parse: function(o) {
       var val = String(o).trim().toLowerCase()
       root.localPerfState = val
@@ -106,42 +106,43 @@ Lib.Card {
   }
 
   function cyclePerf() {
-    var current = root.localPerfState
-    var next = "balanced"
-    if (current.includes("low")) next = "balanced"
-    else if (current === "balanced") next = "balanced-performance"
-    else if (current.includes("balanced-performance")) next = "performance"
-    else if (current.includes("performance")) next = "low-power"
-    root.localPerfState = next
-    det("sudo surface profile set " + next)
+    det("asusctl profile next")
+    // Force poll update soon
+    perfPoll.connInterval = 500
+    confirmTimer.restart()
+  }
+  
+  Timer {
+      id: confirmTimer
+      interval: 800
+      onTriggered: { perfPoll.update(); perfPoll.connInterval = 5000 }
   }
 
   function getPerfIcon() {
     var s = root.localPerfState
-    if (s.includes("low")) return ""
-    if (s === "balanced") return "󰾅"
-    if (s.includes("balanced-performance")) return ""
+    if (s.includes("quiet") || s.includes("saver")) return ""
+    if (s.includes("balanced")) return "󰾅"
     if (s.includes("performance")) return ""
     return "󰾅"
   }
 
   function getPerfLabel() {
     var s = root.localPerfState
-    if (s.includes("low")) return "Saver"
-    if (s === "balanced") return "Normal"
-    if (s.includes("balanced-performance")) return "Optimized"
+    if (s.includes("quiet")) return "Quiet"
+    if (s.includes("balanced")) return "Normal"
     if (s.includes("performance")) return "Perf"
     return "Normal"
   }
 
   function isPerfActive() {
+    // Highlight if not in quiet mode (personal preference, or just always true/false depending on state)
+    // Let's say "active" if it's NOT Quiet
     var s = root.localPerfState
-    return (s.includes("low") || s === "balanced")
+    return !s.includes("quiet")
   }
 
   function getPerfColor() {
     var s = root.localPerfState
-    if (s.includes("balanced-performance")) return "#dbbc7f"
     if (s.includes("performance")) return Theme.accentRed
     return (root.theme ? root.theme.textPrimary : Theme.fgMain)
   }
