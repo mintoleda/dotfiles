@@ -221,6 +221,15 @@ Lib.Card {
         onClicked: toggleDnd()
         fixX: -3
       }
+
+      Lib.ExpressiveButton {
+        theme: root.theme
+        icon: "󰁾" 
+        label: "Eco"
+        active: root.localPerfState.includes("quiet")
+        onClicked: det("~/.config/quickshell/lib/toggle-eco.sh " + (active ? "off" : "on"))
+        fixX: -2
+      }
     }
 
   ColumnLayout {
