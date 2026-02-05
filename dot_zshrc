@@ -4,6 +4,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+[[ -f ~/.env_secrets ]] && source ~/.env_secrets
+
 # - 2. znap
 # Install znap if not already installed
 if [[ ! -f ~/repos/znap/znap.zsh ]]; then
@@ -44,6 +46,7 @@ alias waybar-reload='pkill waybar & hyprctl dispatch exec waybar'
 alias btui='bluetui'
 alias nv='prime-run'
 alias cd='z'
+alias ca='chezmoi add --recursive --exact $(pwd)'
 
 # Created by `pipx` on 2025-09-02 01:12:46
 export PATH="$PATH:/home/adetola/.local/bin"

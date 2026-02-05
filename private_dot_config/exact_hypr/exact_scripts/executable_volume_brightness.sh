@@ -20,16 +20,16 @@ function send_notification {
     if [ "$type" == "volume" ]; then
         local vol=$(get_volume)
         if is_mute; then
-            notify-send -e -u low -h string:x-canonical-private-synchronous:volume -h int:value:0 -i audio-volume-muted-symbolic "Muted"
+            notify-send -e -u low -c volume -h string:x-canonical-private-synchronous:volume -h int:value:0 -i audio-volume-muted-symbolic "Muted"
         else
             local icon="audio-volume-high-symbolic"
             if [ "$vol" -lt 33 ]; then icon="audio-volume-low-symbolic"; 
             elif [ "$vol" -lt 66 ]; then icon="audio-volume-medium-symbolic"; fi
-            notify-send -e -u low -h string:x-canonical-private-synchronous:volume -h int:value:"$vol" -i "$icon" "Volume: ${vol}%"
+            notify-send -e -u low -c volume -h string:x-canonical-private-synchronous:volume -h int:value:"$vol" -i "$icon" "Volume: ${vol}%"
         fi
     elif [ "$type" == "brightness" ]; then
         local br=$(get_brightness)
-        notify-send -e -u low -h string:x-canonical-private-synchronous:brightness -h int:value:"$br" -i display-brightness-symbolic "Brightness: ${br}%"
+        notify-send -e -u low -c brightness -h string:x-canonical-private-synchronous:brightness -h int:value:"$br" -i display-brightness-symbolic "Brightness: ${br}%"
     fi
 }
 
