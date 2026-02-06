@@ -46,7 +46,7 @@ Lib.Card {
   function det(cmd) { Quickshell.execDetached(sh(cmd)) }
 
   property var pollCommand: sh(
-    "(makoctl list 2>/dev/null; makoctl history 2>/dev/null) | " +
+    "makoctl list 2>/dev/null | " +
     "awk 'BEGIN{c=0} /^Notification [0-9]+:/{c++; if(c>60) exit} {print}' || true"
   )
 
