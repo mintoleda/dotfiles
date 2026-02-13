@@ -1,4 +1,4 @@
-@import url('/home/eli/.cache/wal/colors-waybar.css');
+@import url('colors.css');
 
 @define-color mauve  @color9;
 @define-color red  @color9;
@@ -25,7 +25,7 @@ window {
     all:unset;
     padding: 20px;
     border-radius: 0px;
-    background-color: alpha(@background,.5);
+    background-color: @background !important;
 }
 #inner-box {
     margin: 2px;

@@ -7,6 +7,8 @@ HYPR_COLORS_LINK="$HYPR_CONFIG_DIR/colors.conf"
 QS_THEME_LINK="$HOME/.config/quickshell/Colors.qml"
 PYWAL_HYPR_CACHE="$HOME/.cache/wal/colors-hyprland.conf"
 PYWAL_QS_CACHE="$HOME/.cache/wal/colors.qml"
+PYWAL_WOFI_CACHE="$HOME/.cache/wal/colors-waybar.css"
+WOFI_COLORS_LINK="$HOME/.config/wofi/colors.css"
 
 # --- FUNCTIONS ---
 
@@ -17,6 +19,7 @@ apply_pywal() {
     # Link Pywal generated files
     ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
     ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
+    ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
 
     reload_env
 }
@@ -42,6 +45,12 @@ apply_static() {
         # For now, we'll just not link it, or link a default?
         # Let's assume user wants to keep previous or just warn.
         notify-send "Theme Warning" "Missing Colors.qml for $theme_name"
+    fi
+
+    if [[ -f "$theme_path/colors.css" ]]; then
+        ln -sf "$theme_path/colors.css" "$WOFI_COLORS_LINK"
+    else
+        notify-send "Theme Warning" "Missing colors.css for $theme_name"
     fi
 
     # Set Wallpaper

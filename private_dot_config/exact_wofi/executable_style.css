@@ -1,4 +1,4 @@
-@import url('/home/adetola/.cache/wal/colors-waybar.css');
+@import url('colors.css');
 
 @define-color mauve  @color9;
 @define-color red  @color9;
@@ -25,7 +25,8 @@ window {
     all:unset;
     padding: 20px;
     border-radius: 0px;
-    background-color: alpha(@background,.5);
+    background-color: @background !important;
+    opacity: 1.0 !important;
 }
 #inner-box {
     margin: 2px;
@@ -87,13 +88,14 @@ window {
 
 }
 #entry:selected {
-    box-shadow: 1px 1px 5px rgba(255,255,255, .03);
+    box-shadow: 1px 1px 5px rgba(0,0,0, .3);
     border: none;
-    border-radius: 20px;
-    background-color:transparent;
+    border-radius: 10px;
+    background-color: alpha(@color2, .3);
 }
 #entry:selected #text {
-    color: @mauve;
+    color: @foreground;
+    font-weight: bold;
 }
 #entry:drop(active) {
     background-color: @lavender !important;
