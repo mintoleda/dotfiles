@@ -1,4 +1,4 @@
-@import url('colors.css');
+@import "colors.css";
 
 @define-color mauve  @color9;
 @define-color red  @color9;
@@ -25,11 +25,11 @@ window {
     all:unset;
     padding: 20px;
     border-radius: 0px;
-    background-color: @background !important;
+    background-color: @background;
 }
 #inner-box {
     margin: 2px;
-    padding: 5px
+    padding: 5px;
     border: none;
 }
 #outer-box {    
@@ -92,6 +92,6 @@ window {
     color: @mauve;
 }
 #entry:drop(active) {
-    background-color: @lavender !important;
+    background-color: @lavender;
 }
 

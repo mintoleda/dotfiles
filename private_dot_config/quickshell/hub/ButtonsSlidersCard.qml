@@ -179,12 +179,11 @@ Lib.Card {
         icon: "󰤨"
         label: String(wifiSSID.value || "WiFi")
         active: Boolean(wifiOn.value)
-        onClicked: toggleWifi()
-        onRightClicked: {
+        onClicked: {
             root.closeRequested()
-            // det("nm-connection-editor >/dev/null 2>&1 &")
             det("quickshell -p ~/.config/quickshell/lib/WifiMenu.qml")
         }
+        onRightClicked: toggleWifi()
         fixX: -10
       }
 

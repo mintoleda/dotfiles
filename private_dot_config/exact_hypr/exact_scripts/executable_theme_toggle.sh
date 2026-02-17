@@ -30,36 +30,19 @@ apply_static() {
 
     notify-send "Theme" "Switching to $theme_name..."
 
-    # Check for files
-    if [[ -f "$theme_path/hypr.conf" ]]; then
-        ln -sf "$theme_path/hypr.conf" "$HYPR_COLORS_LINK"
-    else
-        notify-send "Theme Error" "Missing hypr.conf for $theme_name"
-        exit 1
-    fi
-
-    if [[ -f "$theme_path/Colors.qml" ]]; then
-        ln -sf "$theme_path/Colors.qml" "$QS_THEME_LINK"
-    else
-        # If no Quickshell theme exists, maybe fallback to pywal or warn?
-        # For now, we'll just not link it, or link a default?
-        # Let's assume user wants to keep previous or just warn.
-        notify-send "Theme Warning" "Missing Colors.qml for $theme_name"
-    fi
-
-    if [[ -f "$theme_path/colors.css" ]]; then
-        ln -sf "$theme_path/colors.css" "$WOFI_COLORS_LINK"
-    else
-        notify-send "Theme Warning" "Missing colors.css for $theme_name"
-    fi
-
     # Set Wallpaper
     local wallpaper=$(find "$theme_path" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" \) -print -quit)
     if [[ -n "$wallpaper" ]]; then
         waypaper --wallpaper "$wallpaper"
+        wal -i "$wallpaper" -n --cols16
     else
         notify-send "Theme Warning" "No wallpaper found in $theme_name"
     fi
+
+    # Link Pywal generated files
+    ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
+    ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
+    ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
 
     reload_env
 }
@@ -85,7 +68,7 @@ THEMES=$(find "$THEME_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort
 MENU_OPTIONS="pywal\n$THEMES"
 
 # 3. Show Wofi menu
-CHOICE=$(echo -e "$MENU_OPTIONS" | wofi -dmenu -p "Select Theme")
+CHOICE=$(echo -e "$MENU_OPTIONS" | (cd "$HOME/.config/wofi" && wofi -dmenu -p "Select Theme"))
 
 # 4. Handle selection
 if [[ -z "$CHOICE" ]]; then
