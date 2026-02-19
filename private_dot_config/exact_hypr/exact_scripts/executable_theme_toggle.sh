@@ -9,6 +9,8 @@ PYWAL_HYPR_CACHE="$HOME/.cache/wal/colors-hyprland.conf"
 PYWAL_QS_CACHE="$HOME/.cache/wal/colors.qml"
 PYWAL_WOFI_CACHE="$HOME/.cache/wal/colors-waybar.css"
 WOFI_COLORS_LINK="$HOME/.config/wofi/colors.css"
+PYWAL_FUZZEL_CACHE="$HOME/.cache/wal/colors-fuzzel.ini"
+FUZZEL_CONFIG_LINK="$HOME/.config/fuzzel/fuzzel.ini"
 
 # --- FUNCTIONS ---
 
@@ -20,6 +22,7 @@ apply_pywal() {
     ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
     ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
     ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
+    ln -sf "$PYWAL_FUZZEL_CACHE" "$FUZZEL_CONFIG_LINK"
 
     reload_env
 }
@@ -43,6 +46,7 @@ apply_static() {
     ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
     ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
     ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
+    ln -sf "$PYWAL_FUZZEL_CACHE" "$FUZZEL_CONFIG_LINK"
 
     reload_env
 }

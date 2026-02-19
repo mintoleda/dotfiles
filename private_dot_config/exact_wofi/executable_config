@@ -4,9 +4,9 @@ width=500
 show=drun
 prompt=Search
 height=400
-term=kitty
+term=foot
 hide_scroll=true
-print_command=true
+
 insensitive=true
 columns=1
 no_actions=true
