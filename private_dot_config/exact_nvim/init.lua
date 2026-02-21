@@ -1,5 +1,5 @@
-require 'core.options'
-require 'core.keymaps'
+require 'main.options'
+require 'main.keymaps'
 
 vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
 
@@ -14,22 +14,14 @@ local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
 require('lazy').setup({
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons",
-    },
-    lazy = false,
-  },
-  {
-	  'rebelot/kanagawa.nvim',
-	  lazy = false,
-	  priority = 1000,
-	  config = function()
-		  require("kanagawa").load("wave")
-	  end
-  }
+  require 'plugins.neotree',
+  require 'plugins.themes.kanagawa',
+  require 'plugins.bufferline',
+  require 'plugins.lualine',
+  require 'plugins.treesitter',
+  require 'plugins.telescope',
+  require 'plugins.lsp',
+  require 'plugins.cmp',
+  require 'plugins.guess-indent',
+  require 'plugins.render-markdown'
   })

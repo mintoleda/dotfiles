@@ -46,6 +46,7 @@ alias waybar-reload='pkill waybar & hyprctl dispatch exec waybar'
 alias btui='bluetui'
 alias nv='prime-run'
 alias cd='z'
+alias ff='fastfetch'
 alias ca='chezmoi add --recursive --exact $(pwd)'
 
 # Created by `pipx` on 2025-09-02 01:12:46
