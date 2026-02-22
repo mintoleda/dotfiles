@@ -28,13 +28,39 @@ wofi_width() {
 }
 
 function main_menu() {
+    # Detect current state of each toggle
+    if makoctl mode | grep -q "do-not-disturb"; then
+        notif_label="Turn notifications on"
+    else
+        notif_label="Turn notifications off"
+    fi
+
+    current_profile=$(asusctl profile get 2>/dev/null | grep "Active profile" | cut -d' ' -f3)
+    if [ "$current_profile" == "Quiet" ]; then
+        battery_label="Turn battery saver off"
+    else
+        battery_label="Turn battery saver on"
+    fi
+
+    if bluetoothctl show | grep -q "Powered: yes"; then
+        bt_label="Turn bluetooth off"
+    else
+        bt_label="Turn bluetooth on"
+    fi
+
+    if systemctl --user is-active --quiet hypridle; then
+        idle_label="Turn auto-lock off"
+    else
+        idle_label="Turn auto-lock on"
+    fi
+
     options=$(
         cat <<EOF
 $ICON_PERF Power Mode
-$ICON_NOTIF Toggle Notifications
-$ICON_ECO Toggle Battery Saver
-$ICON_BT Toggle Bluetooth
-$ICON_IDLE Toggle Auto-Lock
+$ICON_NOTIF $notif_label
+$ICON_ECO $battery_label
+$ICON_BT $bt_label
+$ICON_IDLE $idle_label
 $ICON_WALL Change Wallpaper
 $ICON_SS Screenshot (Region)
 $ICON_QS Refresh QuickShell
@@ -50,38 +76,42 @@ EOF
     *"Power Mode"*)
         perf_menu
         ;;
-    *"Toggle Notifications"*)
-        makoctl mode | grep -q "do-not-disturb" && makoctl mode -r do-not-disturb || makoctl mode -a do-not-disturb
-        notify-send "Notifications" "Toggled DND mode" -i dialog-information
+    *"notifications"*)
+        if makoctl mode | grep -q "do-not-disturb"; then
+            makoctl mode -r do-not-disturb
+            notify-send "Notifications" "Notifications on" -i dialog-information
+        else
+            makoctl mode -a do-not-disturb
+            notify-send "Notifications" "Notifications off" -i dialog-information
+        fi
         ;;
-    *"Toggle Battery Saver"*)
-        # Determine current state from asusctl or animations
+    *"battery saver"*)
         current_profile=$(asusctl profile get | grep "Active profile" | cut -d' ' -f3)
         if [ "$current_profile" == "Quiet" ]; then
             ~/.config/quickshell/lib/toggle-eco.sh off
-            notify-send "Battery Saver" "Disabled (Balanced)" -i dialog-information
+            notify-send "Battery Saver" "Battery saver off" -i dialog-information
         else
             ~/.config/quickshell/lib/toggle-eco.sh on
-            notify-send "Battery Saver" "Enabled (Quiet)" -i dialog-information
+            notify-send "Battery Saver" "Battery saver on" -i dialog-information
         fi
         ;;
-    *"Toggle Bluetooth"*)
+    *"bluetooth"*)
         if bluetoothctl show | grep -q "Powered: yes"; then
             bluetoothctl power off
-            notify-send "Bluetooth" "Powered Off" -i bluetooth
+            notify-send "Bluetooth" "Bluetooth off" -i bluetooth
         else
             bluetoothctl power on
-            notify-send "Bluetooth" "Powered On" -i bluetooth
+            notify-send "Bluetooth" "Bluetooth on" -i bluetooth
         fi
         ;;
-    *"Toggle Auto-Lock"*)
-        echo "MATCHED: Toggle Auto-Lock" >>/tmp/sys-menu.log
+    *"auto-lock"*)
+        echo "MATCHED: auto-lock" >>/tmp/sys-menu.log
         if systemctl --user is-active --quiet hypridle; then
             systemctl --user stop hypridle
-            notify-send "Auto-Lock" "Auto-lock DISABLED"
+            notify-send "Auto-Lock" "Auto-lock off"
         else
             systemctl --user start hypridle
-            notify-send "Auto-Lock" "Auto-lock ENABLED"
+            notify-send "Auto-Lock" "Auto-lock on"
         fi
         ;;
     *"Change Wallpaper"*)

@@ -63,3 +63,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd)"
+alias footdev='/home/adetola/repos/foot/build-local/foot'
