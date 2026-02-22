@@ -23,5 +23,7 @@ require('lazy').setup({
   require 'plugins.lsp',
   require 'plugins.cmp',
   require 'plugins.guess-indent',
-  require 'plugins.render-markdown'
+  require 'plugins.render-markdown',
+  require 'plugins.jdtls',
+  require 'plugins.mini-pairs',
   })
