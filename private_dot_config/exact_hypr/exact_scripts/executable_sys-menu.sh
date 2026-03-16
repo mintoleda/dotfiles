@@ -5,16 +5,7 @@
 # notify-send "DEBUG" "sys-menu.sh script started"
 echo "--- sys-menu.sh started at $(date) ---" >>/tmp/sys-menu.log
 
-# Icons or emojis to make it look nice
-ICON_PERF="󰓅"
-ICON_NOTIF="󰂚"
-ICON_ECO=""
-ICON_WALL="󰸉"
-ICON_SS="󰄀"
-ICON_BT="󰂯"
-ICON_QS="󱄔"
-ICON_UPTIME="󰅐"
-ICON_IDLE="󱎫"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Ensure we are in the wofi directory for relative CSS imports
 cd "/home/adetola/.config/wofi" || exit
@@ -48,54 +39,56 @@ function main_menu() {
         bt_label="Turn bluetooth on"
     fi
 
-    if systemctl --user is-active --quiet hypridle; then
-        idle_label="Turn auto-lock off"
+    if pgrep -x hypridle >/dev/null; then
+        idle_label="Turn idle-daemon off"
     else
-        idle_label="Turn auto-lock on"
+        idle_label="Turn idle-daemon on"
     fi
 
     options=$(
         cat <<EOF
-$ICON_PERF Power Mode
-$ICON_NOTIF $notif_label
-$ICON_ECO $battery_label
-$ICON_BT $bt_label
-$ICON_IDLE $idle_label
-$ICON_WALL Change Wallpaper
-$ICON_SS Screenshot (Region)
-$ICON_QS Refresh QuickShell
-$ICON_UPTIME System Info
+Power Mode
+$notif_label
+$battery_label
+$bt_label
+$idle_label
+Change Wallpaper
+Screenshot (Region)
+Refresh QuickShell
+System Info
 EOF
     )
 
     # Use the same format as theme_toggle.sh
-    choice=$(echo -e "$options" | wofi -dmenu -p "System Menu" --width $(wofi_width "$options") --height 450 --cache-file /dev/null)
+    choice=$(echo -e "$options" | wofi -dmenu -p "System Menu" --width $(wofi_width "$options") --height 450 --cache-file /dev/null --no-cache)
     echo "DEBUG: raw choice is '[$choice]'" >>/tmp/sys-menu.log
 
     case "$choice" in
     *"Power Mode"*)
         perf_menu
         ;;
-    *"notifications"*)
+    *notif*)
         if makoctl mode | grep -q "do-not-disturb"; then
             makoctl mode -r do-not-disturb
             notify-send "Notifications" "Notifications on" -i dialog-information
         else
+            # Send notification BEFORE turning off, so it actually shows up
+            notify-send "Notifications" "Notifications off (DND)" -i dialog-information
+            sleep 0.5
             makoctl mode -a do-not-disturb
-            notify-send "Notifications" "Notifications off" -i dialog-information
         fi
         ;;
-    *"battery saver"*)
+    *battery*)
         current_profile=$(asusctl profile get | grep "Active profile" | cut -d' ' -f3)
         if [ "$current_profile" == "Quiet" ]; then
-            ~/.config/quickshell/lib/toggle-eco.sh off
+            "$SCRIPT_DIR/toggle_eco.sh" off
             notify-send "Battery Saver" "Battery saver off" -i dialog-information
         else
-            ~/.config/quickshell/lib/toggle-eco.sh on
+            "$SCRIPT_DIR/toggle_eco.sh" on
             notify-send "Battery Saver" "Battery saver on" -i dialog-information
         fi
         ;;
-    *"bluetooth"*)
+    *blue*)
         if bluetoothctl show | grep -q "Powered: yes"; then
             bluetoothctl power off
             notify-send "Bluetooth" "Bluetooth off" -i bluetooth
@@ -104,15 +97,9 @@ EOF
             notify-send "Bluetooth" "Bluetooth on" -i bluetooth
         fi
         ;;
-    *"auto-lock"*)
-        echo "MATCHED: auto-lock" >>/tmp/sys-menu.log
-        if systemctl --user is-active --quiet hypridle; then
-            systemctl --user stop hypridle
-            notify-send "Auto-Lock" "Auto-lock off"
-        else
-            systemctl --user start hypridle
-            notify-send "Auto-Lock" "Auto-lock on"
-        fi
+    *idle-daemon*)
+        echo "MATCHED: idle-daemon" >>/tmp/sys-menu.log
+        "$SCRIPT_DIR/idle.sh" toggle
         ;;
     *"Change Wallpaper"*)
         waypaper
@@ -149,7 +136,7 @@ Performance (High Power)
 EOF
     )
 
-    perf_choice=$(echo -e "$perf_options" | wofi -dmenu -p "Select Performance Profile" --width $(wofi_width "$perf_options") --height 300 --cache-file /dev/null)
+    perf_choice=$(echo -e "$perf_options" | wofi -dmenu -p "Select Performance Profile" --width $(wofi_width "$perf_options") --height 300 --cache-file /dev/null --no-cache)
 
     case "$perf_choice" in
     "Quiet"*)
