@@ -25,5 +25,6 @@ require('lazy').setup({
   require 'plugins.guess-indent',
   require 'plugins.render-markdown',
   require 'plugins.jdtls',
-  require 'plugins.mini-pairs',
+  require 'plugins.mini-animate',
+  require 'plugins.mini-pairs'
   })
