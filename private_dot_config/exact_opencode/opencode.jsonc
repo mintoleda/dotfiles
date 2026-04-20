@@ -2,10 +2,10 @@
     "$schema": "https://opencode.ai/config.json",
     "provider": {
         "openrouter": {
-            "api": "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"
+            "api": "$OPENROUTER_API_KEY"
         },
         "google": {
-            "api": "AIzaSyBhOdDsrgA5ObRTbR0te-mH__UaIxs1Y-c"
+            "api": "$GOOGLE_API_KEY"
         }
     },
     "model": "google/gemini-3.1-pro-preview",
