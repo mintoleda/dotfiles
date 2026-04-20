@@ -48,6 +48,11 @@ alias nv='prime-run'
 alias cd='z'
 alias ff='fastfetch'
 alias ca='chezmoi add --recursive --exact $(pwd)'
+alias footdev='/home/adetola/repos/foot/build-local/foot'
+alias c='clear && '
+alias ls='eza'
+alias la='ls -la'
+alias bd='bun run dev'
 
 # Created by `pipx` on 2025-09-02 01:12:46
 unset NPM_CONFIG_PREFIX
@@ -63,4 +68,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd)"
-alias footdev='/home/adetola/repos/foot/build-local/foot'
+
+# opencode
+export PATH=/home/adetola/.opencode/bin:$PATH
