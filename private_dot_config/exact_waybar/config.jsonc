@@ -1,19 +1,28 @@
 {
   "layer": "top",
   "position": "top",
+  "exclusive": false,
+  "margin-top": 8,
+  "margin-left": 12,
+  "margin-right": 12,
   "reload_style_on_change": true,
-  "modules-left": ["clock", "hyprland/workspaces" /*, "tray"*/],
-  "modules-center": ["cava"],
+  "modules-left": [
+    "clock",
+    "hyprland/workspaces" /*, "tray"*/
+  ],
+  "modules-center": [
+    "cava"
+  ],
   "modules-right": [
+    "custom/updates",
+    "tray",
     "group/expand",
     "group/netbt",
     // "bluetooth",
     // "network",
     "battery",
   ],
-
   "hyprland/workspaces": {},
-
   "clock": {
     "format": "{:%I:%M %p} ",
     "interval": 1,
@@ -26,7 +35,6 @@
       },
     },
   },
-
   "network": {
     "format-wifi": "",
     "format-ethernet": "",
@@ -34,19 +42,16 @@
     "tooltip-format-disconnected": "Error",
     "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
     "tooltip-format-ethernet": "{ifname} 🖧 ",
-    "on-click": "kitty nmtui",
+    "on-click": "foot nmtui",
   },
-
   "bluetooth": {
     "format-on": "󰂯",
     "format-off": "BT-off",
     "format-disabled": "󰂲",
-
     "tooltip-format": "disconnected",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
     "on-click": "kitty bluetui",
   },
-
   "battery": {
     "interval": 30,
     "states": {
@@ -54,35 +59,46 @@
       // "warning": 30,
       "critical": 20,
     },
-
     "format": "{capacity}% {icon}",
     "format-charging": "{capacity}% 󰂄",
     "format-plugged": "{capacity}% 󰂄 ",
-
-    "format-icons": ["󰁻", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
+    "format-icons": [
+      "󰁻",
+      "󰁼",
+      "󰁾",
+      "󰂀",
+      "󰂂",
+      "󰁹"
+    ],
   },
-
   "group/netbt": {
     "orientation": "horizontal",
-    "modules": ["network", "bluetooth"],
+    "modules": [
+      "network",
+      "bluetooth"
+    ],
   },
-
   "custom/wallpaper": {
     "format": "   ",
     "tooltip": false,
     "on-click": "waypaper",
   },
-
+  "custom/updates": {
+    "exec": "n=$(checkupdates 2>/dev/null | wc -l); echo $n",
+    "interval": 1800,
+    "format": "󰚰  {}",
+    "hide-empty-text": true,
+    "on-click": "kitty -e bash -lc 'sudo pacman -Syu'",
+    "tooltip": false,
+  },
   "custom/expand": {
     "format": "",
     "tooltip": false,
   },
-
   "custom/endpoint": {
     "format": "|",
     "tooltip": false,
   },
-
   "group/expand": {
     "orientation": "horizontal",
     "drawer": {
@@ -90,9 +106,13 @@
       "transition-to-left": true,
       "click-to-reveal": true,
     },
-    "modules": ["custom/expand", "pulseaudio", "backlight", "custom/endpoint"],
+    "modules": [
+      "custom/expand",
+      "pulseaudio",
+      "backlight",
+      "custom/endpoint"
+    ],
   },
-
   "cava": {
     "cava_config": "$XDG_CONFIG_HOME/cava/config",
     "bars": 30,
@@ -102,25 +122,33 @@
     "bar_delimiter": 0,
     "noise_reduction": 0.77,
     // "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
-    "format-icons": ["⠁", "⠃", "⠇", "⡇", "⡏", "⡟", "⡿", "⣿"],
+    "format-icons": [
+      "⠁",
+      "⠃",
+      "⠇",
+      "⡇",
+      "⡏",
+      "⡟",
+      "⡿",
+      "⣿"
+    ],
     "actions": {
       "on-click-right": "mode",
     },
   },
-
   "pulseaudio": {
     "format": "{volume}% 󰕾",
     "format-muted": "{volume}% ",
   },
-
   "backlight": {
     "format": "{percent}% 󰃝",
   },
-
   "tray": {
     "icon-size": 11,
     "spacing": 5,
     "tooltip-format": "{app_id}",
-    "ignore-list": ["Firewall"],
+    "ignore-list": [
+      "Firewall"
+    ],
   },
 }

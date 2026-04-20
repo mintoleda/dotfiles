@@ -6,8 +6,10 @@
 }
 
 window#waybar {
-  background-color: alpha(@background, 1);
+  background-color: alpha(@background, 0.85);
   color: @foreground;
+  border-radius: 12px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.4);
   transition-property: background-color;
   transition-duration: 0.5s;
 }
@@ -139,6 +141,14 @@ tooltip {
 #custom-endpoint {
   color: transparent;
   text-shadow: 0px 0px 1.5px rgba(0, 0, 0, 1);
+}
+#custom-updates {
+  padding: 0px 5px;
+  color: @color7;
+  transition: all 0.3s ease;
+}
+#custom-updates:hover {
+  color: @color9;
 }
 #tray {
   padding: 0px 5px;

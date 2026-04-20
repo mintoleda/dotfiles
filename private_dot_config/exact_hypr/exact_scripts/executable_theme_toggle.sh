@@ -4,25 +4,21 @@
 THEME_DIR="$HOME/.config/hypr/themes"
 HYPR_CONFIG_DIR="$HOME/.config/hypr/configs"
 HYPR_COLORS_LINK="$HYPR_CONFIG_DIR/colors.conf"
-QS_THEME_LINK="$HOME/.config/quickshell/Colors.qml"
 PYWAL_HYPR_CACHE="$HOME/.cache/wal/colors-hyprland.conf"
-PYWAL_QS_CACHE="$HOME/.cache/wal/colors.qml"
 PYWAL_WOFI_CACHE="$HOME/.cache/wal/colors-waybar.css"
 WOFI_COLORS_LINK="$HOME/.config/wofi/colors.css"
-PYWAL_FUZZEL_CACHE="$HOME/.cache/wal/colors-fuzzel.ini"
-FUZZEL_CONFIG_LINK="$HOME/.config/fuzzel/fuzzel.ini"
+CURRENT_THEME_FILE="$HOME/.cache/current-theme"
 
 # --- FUNCTIONS ---
 
 
 apply_pywal() {
+    echo "pywal" > "$CURRENT_THEME_FILE"
     notify-send "Theme" "Switching to Pywal..."
 
     # Link Pywal generated files
     ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
-    ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
     ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
-    ln -sf "$PYWAL_FUZZEL_CACHE" "$FUZZEL_CONFIG_LINK"
 
     reload_env
 }
@@ -31,6 +27,7 @@ apply_static() {
     local theme_name="$1"
     local theme_path="$THEME_DIR/$theme_name"
 
+    echo "$theme_name" > "$CURRENT_THEME_FILE"
     notify-send "Theme" "Switching to $theme_name..."
 
     # Set Wallpaper
@@ -38,15 +35,17 @@ apply_static() {
     if [[ -n "$wallpaper" ]]; then
         waypaper --wallpaper "$wallpaper"
         wal -i "$wallpaper" -n --cols16
+        # Link Pywal generated files
+        ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
+        ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
     else
-        notify-send "Theme Warning" "No wallpaper found in $theme_name"
+        notify-send "Theme" "No wallpaper found in $theme_name, applying colors only"
+        # Link static theme color files directly
+        [[ -f "$theme_path/hypr.conf" ]] && ln -sf "$theme_path/hypr.conf" "$HYPR_COLORS_LINK"
+        [[ -f "$theme_path/colors.css" ]] && ln -sf "$theme_path/colors.css" "$WOFI_COLORS_LINK"
+        # Waybar imports directly from the pywal cache path, so update it too
+        [[ -f "$theme_path/colors.css" ]] && cp "$theme_path/colors.css" "$PYWAL_WOFI_CACHE"
     fi
-
-    # Link Pywal generated files
-    ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
-    ln -sf "$PYWAL_QS_CACHE" "$QS_THEME_LINK"
-    ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
-    ln -sf "$PYWAL_FUZZEL_CACHE" "$FUZZEL_CONFIG_LINK"
 
     reload_env
 }
@@ -55,10 +54,10 @@ reload_env() {
     # Reload Hyprland
     hyprctl reload
 
-    # Restart Quickshell
+    # Restart Waybar
     # 'disown' is important to keep it running after script exits
-    pkill quickshell
-    quickshell &
+    pkill waybar
+    waybar &
     disown
 }
 
