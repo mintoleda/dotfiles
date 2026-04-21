@@ -8,17 +8,31 @@ PYWAL_HYPR_CACHE="$HOME/.cache/wal/colors-hyprland.conf"
 PYWAL_WOFI_CACHE="$HOME/.cache/wal/colors-waybar.css"
 WOFI_COLORS_LINK="$HOME/.config/wofi/colors.css"
 CURRENT_THEME_FILE="$HOME/.cache/current-theme"
+STATIC_HYPR_COLORS="$HYPR_CONFIG_DIR/colors-static.conf"
 
 # --- FUNCTIONS ---
 
+link_pywal_colors() {
+    mkdir -p "$HOME/.cache/wal"
+
+    if [[ -f "$PYWAL_HYPR_CACHE" ]]; then
+        ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
+    else
+        notify-send "Theme" "Pywal Hypr colors missing, falling back to static colors"
+        ln -sf "$STATIC_HYPR_COLORS" "$HYPR_COLORS_LINK"
+    fi
+
+    if [[ -f "$PYWAL_WOFI_CACHE" ]]; then
+        ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
+    fi
+}
 
 apply_pywal() {
     echo "pywal" > "$CURRENT_THEME_FILE"
     notify-send "Theme" "Switching to Pywal..."
 
-    # Link Pywal generated files
-    ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
-    ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
+    # Link Pywal generated files, or fall back if they don't exist yet.
+    link_pywal_colors
 
     reload_env
 }
@@ -35,9 +49,8 @@ apply_static() {
     if [[ -n "$wallpaper" ]]; then
         waypaper --wallpaper "$wallpaper"
         wal -i "$wallpaper" -n --cols16
-        # Link Pywal generated files
-        ln -sf "$PYWAL_HYPR_CACHE" "$HYPR_COLORS_LINK"
-        ln -sf "$PYWAL_WOFI_CACHE" "$WOFI_COLORS_LINK"
+        # Link Pywal generated files, or fall back if generation failed.
+        link_pywal_colors
     else
         notify-send "Theme" "No wallpaper found in $theme_name, applying colors only"
         # Link static theme color files directly
@@ -82,4 +95,3 @@ case "$CHOICE" in
 "pywal") apply_pywal ;;
 *) apply_static "$CHOICE" ;;
 esac
-
