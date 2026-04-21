@@ -17,9 +17,9 @@ if [[ ! -f ~/repos/znap/znap.zsh ]]; then
 fi
 source ~/repos/znap/znap.zsh
 
-# znap source zsh-users/zsh-autosuggestions
-# znap source zdharma-continuum/fast-syntax-highlighting
-# znap source zsh-users/zsh-completions
+znap source zsh-users/zsh-autosuggestions
+znap source zdharma-continuum/fast-syntax-highlighting
+znap source zsh-users/zsh-completions
 
 
 autoload -Uz compinit && compinit
