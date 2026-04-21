@@ -1,0 +1,26 @@
+opencode.jsonc
+dot_config/opencode/secrets.env
+
+# Zen: ignore volatile/sensitive profile state
+.zen/**/bookmarkbackups/**
+.zen/**/bounce-tracking-protection.sqlite*
+.zen/**/cert9.db
+.zen/**/cookies.sqlite*
+.zen/**/crashes/**
+.zen/**/favicons.sqlite*
+.zen/**/formhistory.sqlite*
+.zen/**/key4.db
+.zen/**/logins*
+.zen/**/minidumps/**
+.zen/**/places.sqlite*
+.zen/**/sessionstore-backups/**
+.zen/**/sessionstore-logs/**
+.zen/**/sessionstore*
+.zen/**/storage/**
+.zen/**/storage-sync-v2.sqlite*
+.zen/**/synced-tabs.db*
+.zen/**/weave/**
+.zen/**/*.sqlite-journal
+.zen/**/*.wal
+.zen/**/*.shm
+.zen/**/*.jsonlz4
