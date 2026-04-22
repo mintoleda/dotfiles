@@ -1,6 +1,6 @@
 input {
 {{- if eq .chezmoi.hostname "prometheus" }}
-    sensitivity = -0.5
+    sensitivity = 0.5
     accel_profile = flat
 {{- else if eq .chezmoi.hostname "daedalus" }}
     sensitivity = 0.0
