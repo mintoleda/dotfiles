@@ -28,12 +28,21 @@ return {
     default_format_opts = {
       lsp_format = "fallback",
     },
-    -- Set up format-on-save
-    format_on_save = { timeout_ms = 500 },
+    -- Set up format-on-save without surfacing formatter failures as write-time errors
+    format_on_save = function(_bufnr)
+      return {
+        timeout_ms = 500,
+        lsp_format = "fallback",
+        quiet = true,
+      }
+    end,
     -- Customize formatters
     formatters = {
       shfmt = {
         append_args = { "-i", "2" },
+      },
+      ["google-java-format"] = {
+        append_args = { "--aosp" },
       },
     },
   },
