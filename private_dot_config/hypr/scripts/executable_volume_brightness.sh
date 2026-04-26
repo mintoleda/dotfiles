@@ -11,8 +11,8 @@ function is_mute {
 }
 
 function get_brightness {
-    # Extract percentage from brightnessctl output
-    brightnessctl i | grep -oP '\(\d+%\)' | grep -oP '\d+' | head -n 1
+    brightnessctl -m 2>/dev/null \
+        | awk -F, 'NR==1 { gsub(/%/, "", $4); print $4 }'
 }
 
 function send_notification {
@@ -29,7 +29,8 @@ function send_notification {
         fi
     elif [ "$type" == "brightness" ]; then
         local br=$(get_brightness)
-        notify-send -e -u low -c brightness -h string:x-canonical-private-synchronous:brightness -h int:value:"$br" -i display-brightness-symbolic "Brightness: ${br}%"
+        [ -n "$br" ] || br=0
+        notify-send -e -u low -c brightness -h string:x-canonical-private-synchronous:brightness -h int:value:"$br" -i display-brightness-symbolic "Backlight: ${br}%"
     fi
 }
 
@@ -47,11 +48,11 @@ case $1 in
         send_notification volume
         ;;
     br_up)
-        brightnessctl -e4 -n2 set 5%+
+        brightnessctl -e4 -n2 set 5%+ >/dev/null 2>&1
         send_notification brightness
         ;;
     br_down)
-        brightnessctl -e4 -n2 set 5%-
+        brightnessctl -e4 -n2 set 5%- >/dev/null 2>&1
         send_notification brightness
         ;;
 esac
