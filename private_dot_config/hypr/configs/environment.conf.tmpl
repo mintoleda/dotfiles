@@ -4,7 +4,13 @@
 # env = HYPRCURSOR_SIZE,24
 
 # gpu prio
+{{- if eq .chezmoi.hostname "prometheus" }}
 env = AQ_DRM_DEVICES,/dev/dri/card2:/dev/dri/card1
+{{- else }}
+# Leave AQ_DRM_DEVICES unset unless this host needs explicit DRM card ordering.
+# Hard-coding card numbers can prevent Hyprland from starting when they change.
+# env = AQ_DRM_DEVICES,/dev/dri/card0
+{{- end }}
 
 # backend support
 env = XDG_SESSION_TYPE,wayland
@@ -20,4 +26,3 @@ env = NVD_BACKEND,direct
 env = ELECTRON_OZONE_PLATFORM_HINT,auto
 
 env = HYPRSHOT_DIR,/home/adetola/Pictures/Screenshot
-
