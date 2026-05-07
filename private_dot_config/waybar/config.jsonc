@@ -20,7 +20,7 @@
     "group/netbt",
     // "bluetooth",
     // "network",
-    "battery",
+    "battery"
   ],
   "hyprland/workspaces": {},
   "clock": {
@@ -31,9 +31,9 @@
       "format": {
         "months": "<span color='#BABEC5'><b>{}</b></span>",
         "weekdays": "<span color='#8B8E92'><b>{}</b></span>",
-        "today": "<span color='#80807F'><b><u>{}</u></b></span>",
-      },
-    },
+        "today": "<span color='#80807F'><b><u>{}</u></b></span>"
+      }
+    }
   },
   "network": {
     "format-wifi": "",
@@ -42,7 +42,7 @@
     "tooltip-format-disconnected": "Error",
     "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
     "tooltip-format-ethernet": "{ifname} 🖧 ",
-    "on-click": "foot nmtui",
+    "on-click": "foot nmtui"
   },
   "bluetooth": {
     "format-on": "󰂯",
@@ -50,14 +50,14 @@
     "format-disabled": "󰂲",
     "tooltip-format": "disconnected",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-    "on-click": "kitty bluetui",
+    "on-click": "kitty bluetui"
   },
   "battery": {
     "interval": 30,
     "states": {
       "good": 95,
       // "warning": 30,
-      "critical": 20,
+      "critical": 20
     },
     "format": "{capacity}% {icon}",
     "format-charging": "{capacity}% 󰂄",
@@ -69,19 +69,19 @@
       "󰂀",
       "󰂂",
       "󰁹"
-    ],
+    ]
   },
   "group/netbt": {
     "orientation": "horizontal",
     "modules": [
       "network",
       "bluetooth"
-    ],
+    ]
   },
   "custom/wallpaper": {
     "format": "   ",
     "tooltip": false,
-    "on-click": "waypaper",
+    "on-click": "waypaper"
   },
   "custom/updates": {
     "exec": "n=$(checkupdates 2>/dev/null | wc -l); echo $n",
@@ -89,31 +89,32 @@
     "format": "󰚰  {}",
     "hide-empty-text": true,
     "on-click": "kitty -e bash -lc 'sudo pacman -Syu'",
-    "tooltip": false,
+    "tooltip": false
   },
   "custom/expand": {
     "format": "",
-    "tooltip": false,
+    "tooltip": false
   },
   "custom/endpoint": {
     "format": "|",
-    "tooltip": false,
+    "tooltip": false
   },
   "group/expand": {
     "orientation": "horizontal",
     "drawer": {
       "transition-duration": 600,
       "transition-to-left": true,
-      "click-to-reveal": true,
+      "click-to-reveal": true
     },
     "modules": [
       "custom/expand",
       "pulseaudio",
       "backlight",
       "custom/endpoint"
-    ],
+    ]
   },
   "cava": {
+    // "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "cava_config": "$XDG_CONFIG_HOME/cava/config",
     "bars": 30,
     "hide_on_silence": false,
@@ -121,7 +122,6 @@
     "sleep_timer": 5,
     "bar_delimiter": 0,
     "noise_reduction": 0.77,
-    // "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format-icons": [
       "⠁",
       "⠃",
@@ -133,15 +133,15 @@
       "⣿"
     ],
     "actions": {
-      "on-click-right": "mode",
-    },
+      "on-click-right": "mode"
+    }
   },
   "pulseaudio": {
     "format": "{volume}% 󰕾",
-    "format-muted": "{volume}% ",
+    "format-muted": "{volume}% "
   },
   "backlight": {
-    "format": "{percent}% 󰃝",
+    "format": "{percent}% 󰃝"
   },
   "tray": {
     "icon-size": 11,
@@ -149,6 +149,6 @@
     "tooltip-format": "{app_id}",
     "ignore-list": [
       "Firewall"
-    ],
-  },
+    ]
+  }
 }

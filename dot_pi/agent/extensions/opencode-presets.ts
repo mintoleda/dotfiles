@@ -7,47 +7,56 @@ const NO_WRITE_TOOLS = ["read", "bash", "edit", "grep", "find", "ls"] as const;
 
 type PresetName = "ask" | "build" | "code-reviewer" | "debug" | "explore" | "plan";
 
+type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+
 type PresetProfile = {
   provider: string;
   model: string;
+  thinkingLevel: ThinkingLevel;
   toolMode: "full" | "read-only" | "no-write";
   confirmEdit: boolean;
 };
 
 const PRESETS: Record<PresetName, PresetProfile> = {
   ask: {
-    provider: "google",
-    model: "gemini-3.1-flash-lite-preview",
+    provider: "github-copilot",
+    model: "gpt-5.4-mini",
+    thinkingLevel: "medium",
     toolMode: "read-only",
     confirmEdit: false,
   },
   build: {
-    provider: "google",
-    model: "gemini-3-flash-preview",
+    provider: "openai-codex",
+    model: "gpt-5.5",
+    thinkingLevel: "low",
     toolMode: "full",
     confirmEdit: false,
   },
   "code-reviewer": {
     provider: "github-copilot",
-    model: "gpt-5.4-mini",
+    model: "gpt-5.3-codex",
+    thinkingLevel: "medium",
     toolMode: "no-write",
     confirmEdit: true,
   },
   debug: {
-    provider: "openrouter",
-    model: "xiaomi/mimo-v2-flash",
+    provider: "github-copilot",
+    model: "gpt-5.4-mini",
+    thinkingLevel: "high",
     toolMode: "no-write",
     confirmEdit: true,
   },
   explore: {
     provider: "google",
     model: "gemini-3.1-flash-lite-preview",
+    thinkingLevel: "low",
     toolMode: "full",
     confirmEdit: false,
   },
   plan: {
     provider: "github-copilot",
     model: "gpt-5.4-mini",
+    thinkingLevel: "high",
     toolMode: "read-only",
     confirmEdit: false,
   },
@@ -141,6 +150,8 @@ async function applyPreset(
     }
     return;
   }
+
+  pi.setThinkingLevel(profile.thinkingLevel);
 
   if (ctx.hasUI && notifySource) {
     ctx.ui.notify(`Preset ${presetName} active (${notifySource})`, "info");

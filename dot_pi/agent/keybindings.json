@@ -1,4 +1,9 @@
 {
   "app.thinking.cycle": ["ctrl+t"],
-  "app.thinking.toggle": ["ctrl+shift+t"]
+  "app.thinking.toggle": ["ctrl+shift+t"],
+  "app.model.cycleForward": ["ctrl+p"],
+  "app.model.cycleBackward": ["shift+ctrl+p"],
+  "app.session.togglePath": [],
+  "app.models.toggleProvider": [],
+  "tui.editor.deleteToLineEnd": ["ctrl+shift+k"]
 }
