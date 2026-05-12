@@ -5,11 +5,13 @@ THEME_DIR="$HOME/.config/hypr/themes"
 THEME_COLORS_DIR="$THEME_DIR/colors"
 HYPR_CONFIG_DIR="$HOME/.config/hypr/configs"
 HYPR_COLORS_LINK="$HYPR_CONFIG_DIR/colors.conf"
+HYPR_LUA_COLORS_LINK="$HYPR_CONFIG_DIR/colors.lua"
 PYWAL_HYPR_CACHE="$HOME/.cache/wal/colors-hyprland.conf"
 PYWAL_WOFI_CACHE="$HOME/.cache/wal/colors-waybar.css"
 WOFI_COLORS_LINK="$HOME/.config/wofi/colors.css"
 CURRENT_THEME_FILE="$HOME/.cache/current-theme"
 STATIC_HYPR_COLORS="$HYPR_CONFIG_DIR/colors-static.conf"
+STATIC_HYPR_LUA_COLORS="$HYPR_CONFIG_DIR/colors-static.lua"
 OBSIDIAN_COLORS_SCRIPT="$HOME/.config/hypr/scripts/obsidian_colors.sh"
 
 # --- FUNCTIONS ---
@@ -80,6 +82,38 @@ theme_color() {
     printf '%s\n' "$value"
 }
 
+lua_long_string() {
+    printf '[[%s]]' "$1"
+}
+
+write_hyprland_lua_colors_from_conf() {
+    local hypr_file="$1"
+    local lua_file="$2"
+    local wallpaper_value background_value foreground_value cursor_value active_value inactive_value i color_value
+
+    wallpaper_value=$(hypr_color_value "wallpaper" "$hypr_file")
+    background_value=$(hypr_color_value "backgroundCol" "$hypr_file")
+    foreground_value=$(hypr_color_value "foregroundCol" "$hypr_file")
+    cursor_value=$(hypr_color_value "cursor" "$hypr_file")
+    active_value=$(hypr_color_value "activeBorder" "$hypr_file")
+    inactive_value=$(hypr_color_value "inactiveBorder" "$hypr_file")
+
+    {
+        printf 'wallpaper = '; lua_long_string "$wallpaper_value"; printf '\n'
+        printf 'backgroundCol = '; lua_long_string "$background_value"; printf '\n'
+        printf 'foregroundCol = '; lua_long_string "$foreground_value"; printf '\n'
+        printf 'cursor = '; lua_long_string "$cursor_value"; printf '\n\n'
+        printf 'activeBorder = '; lua_long_string "$active_value"; printf '\n'
+        printf 'inactiveBorder = '; lua_long_string "$inactive_value"; printf '\n\n'
+        for i in {0..15}; do
+            color_value=$(hypr_color_value "color$i" "$hypr_file")
+            printf 'color%s = ' "$i"
+            lua_long_string "$color_value"
+            printf '\n'
+        done
+    } > "$lua_file"
+}
+
 write_current_theme_colors() {
     local theme_name="$1"
     local theme_path="$2"
@@ -121,6 +155,8 @@ EOF
     for i in {0..15}; do
         printf '$color%s = 0xff%s\n' "$i" "${colors[$i]#\#}" >> "$THEME_COLORS_DIR/colors-hyprland.conf"
     done
+
+    write_hyprland_lua_colors_from_conf "$THEME_COLORS_DIR/colors-hyprland.conf" "$THEME_COLORS_DIR/colors.lua"
 
     {
         printf '@define-color foreground %s;\n' "$foreground"
@@ -245,6 +281,9 @@ sync_pywal_theme_colors() {
     cp "$HOME"/.cache/wal/*.css "$THEME_COLORS_DIR"/ 2>/dev/null || true
     cp "$HOME"/.cache/wal/*.sh "$THEME_COLORS_DIR"/ 2>/dev/null || true
     cp "$HOME"/.cache/wal/*.qml "$THEME_COLORS_DIR"/ 2>/dev/null || true
+    if [[ -f "$THEME_COLORS_DIR/colors-hyprland.conf" ]]; then
+        write_hyprland_lua_colors_from_conf "$THEME_COLORS_DIR/colors-hyprland.conf" "$THEME_COLORS_DIR/colors.lua"
+    fi
     generate_obsidian_colors
 }
 
@@ -259,9 +298,11 @@ link_pywal_colors() {
     if [[ -f "$PYWAL_HYPR_CACHE" ]]; then
         sync_pywal_theme_colors
         ln -sf "$THEME_COLORS_DIR/colors-hyprland.conf" "$HYPR_COLORS_LINK"
+        ln -sf "$THEME_COLORS_DIR/colors.lua" "$HYPR_LUA_COLORS_LINK"
     else
         notify-send "Theme" "Pywal Hypr colors missing, falling back to static colors"
         ln -sf "$STATIC_HYPR_COLORS" "$HYPR_COLORS_LINK"
+        ln -sf "$STATIC_HYPR_LUA_COLORS" "$HYPR_LUA_COLORS_LINK"
     fi
 
     if [[ -f "$PYWAL_WOFI_CACHE" ]]; then
@@ -299,6 +340,7 @@ apply_static() {
         sync_static_theme_colors_to_wal
         # Link generated current-theme color files directly
         [[ -f "$THEME_COLORS_DIR/colors-hyprland.conf" ]] && ln -sf "$THEME_COLORS_DIR/colors-hyprland.conf" "$HYPR_COLORS_LINK"
+        [[ -f "$THEME_COLORS_DIR/colors.lua" ]] && ln -sf "$THEME_COLORS_DIR/colors.lua" "$HYPR_LUA_COLORS_LINK"
         [[ -f "$THEME_COLORS_DIR/colors-waybar.css" ]] && ln -sf "$THEME_COLORS_DIR/colors-waybar.css" "$WOFI_COLORS_LINK"
         # Waybar imports directly from the pywal cache path, so update it too
         [[ -f "$THEME_COLORS_DIR/colors-waybar.css" ]] && cp "$THEME_COLORS_DIR/colors-waybar.css" "$PYWAL_WOFI_CACHE"
